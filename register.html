@@ -222,71 +222,57 @@
             border-bottom: 1px solid var(--text-main);
         }
 
-        /* 🌟 เอฟเฟกต์ปุ่มขยับเมื่อเอาเมาส์ไปชี้ */
-button, .btn-auth, .custom-file-upload {
-    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
-}
+        button, .btn-auth, .custom-file-upload {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
+        }
 
-button:hover, .btn-auth:hover, .custom-file-upload:hover {
-    transform: translateY(-3px) scale(1.02) !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
-}
+        button:hover, .btn-auth:hover, .custom-file-upload:hover {
+            transform: translateY(-3px) scale(1.02) !important;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+        }
 
-button:active, .btn-auth:active, .custom-file-upload:active {
-    transform: translateY(-1px) scale(1.00) !important;
-}
+        button:active, .btn-auth:active, .custom-file-upload:active {
+            transform: translateY(-1px) scale(1.00) !important;
+        }
 
-/* 🌟 ตั้งค่าเริ่มต้นให้หน้าเว็บพร้อมทำ Fade Transition */
-body {
-    opacity: 0;
-    animation: fadeInPage 0.4s ease forwards;
-}
+        body {
+            opacity: 0;
+            animation: fadeInPage 0.4s ease forwards;
+        }
 
-@keyframes fadeInPage {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+        @keyframes fadeInPage {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-/* คลาสสำหรับจางหายตอนกดเปลี่ยนหน้า */
-body.fade-out {
-    opacity: 0;
-    transform: translateY(-6px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-/* 🌟 เปิดใช้งานระบบเปลี่ยนหน้าแบบสมูทไร้รอยต่อ (View Transitions API) */
-@view-transition {
-    navigation: auto;
-}
-
+        body.fade-out {
+            opacity: 0;
+            transform: translateY(-6px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        @view-transition {
+            navigation: auto;
+        }
     </style>
 </head>
 <body>
 
-       <nav>
-        <!-- 1. เปลี่ยนโลโก้ BodySlim ให้ลิงก์ไปที่ home.html -->
+    <nav>
         <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
-        
-        <!-- 2. เมนูหลัก (Desktop) -->
         <div class="nav-links">
             <a href="index.html">BodySlim ?</a>
             <a href="home.html">หน้าหลัก</a>
             <a href="workout.html">ตารางออกกำลังกาย</a>
             <a href="profile.html">โปรไฟล์</a>
         </div>
-
         <div class="nav-actions">
             <button id="dark-mode-toggle" class="btn-auth btn-secondary"></button>
-            
-            <!-- โซนปุ่ม Login/Register (สคริปต์ JS จะดึงข้อมูลมาแสดงทับในส่วนนี้) -->
             <div id="auth-buttons" style="display: flex; gap: 8px; border-radius: 0;">
                 <button class="btn-auth btn-secondary" onclick="window.location.href='login.html'">เข้าสู่ระบบ</button>
                 <button class="btn-auth" onclick="window.location.href='register.html'">สมัครบัญชี</button>
             </div>
-            
             <button id="hamburger-btn" class="hamburger-btn btn-auth"><i data-lucide="menu" style="width: 18px; height: 18px;"></i></button>
         </div>
-
-        <!-- 3. เมนูมือถือ (Mobile Dropdown) -->
         <div id="mobile-dropdown" class="mobile-dropdown">
             <a href="index.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> BodySlim ?</a>
             <a href="home.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> หน้าหลัก</a>
@@ -310,17 +296,14 @@ body.fade-out {
                     <label for="email">อีเมล</label>
                     <input type="email" id="email" placeholder="name@example.com" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="password">รหัสผ่าน</label>
                     <input type="password" id="password" placeholder="ตั้งรหัสผ่าน 6 ตัวขึ้นไป" required>
                 </div>
-
                 <div class="form-group">
                     <label for="birth-date">วันเกิดของคุณ (วัน/เดือน/ปีเกิด)</label>
                     <input type="date" id="birth-date" required style="cursor: pointer;">
                 </div>
-                
                 <button type="submit" class="btn-submit">สมัครสมาชิก</button>
             </form> 
 
@@ -383,6 +366,7 @@ body.fade-out {
 
         const username = document.getElementById('username').value;
         const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value; // บันทึกรหัสผ่าน
         const birthDate = document.getElementById('birth-date').value; 
 
         const existingData = localStorage.getItem('user_session');
@@ -399,6 +383,7 @@ body.fade-out {
             isLoggedIn: false, 
             username: username,
             email: email,
+            password: password, // เก็บพาสเวิร์ดใน Object
             birthDate: birthDate, 
             goal: "ยังไม่ได้เลือกเป้าหมาย",
             weight: null,        
@@ -416,26 +401,21 @@ body.fade-out {
 
     lucide.createIcons();
 
-    // 🌟 เอฟเฟกต์ Fade ตอนกดเปลี่ยนหน้า
-document.addEventListener('DOMContentLoaded', () => {
-    const internalLinks = document.querySelectorAll('a[href]');
-    
-    internalLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            
-            // ตรวจสอบว่าเป็นลิงก์ภายในเว็บเดียวกันหรือไม่ และไม่ใช่ลิงก์ # หรือเปิด tab ใหม่
-            if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
-                e.preventDefault(); // หยุดการเปลี่ยนหน้าชั่วคราวเพื่อให้แอนิเมชันเล่นก่อน
-                document.body.classList.add('fade-out');
-                
-                setTimeout(() => {
-                    window.location.href = href;
-                }, 300); // รอให้แอนิเมชันเล่น 0.3 วินาทีแล้วค่อยเปลี่ยนหน้า
-            }
+    document.addEventListener('DOMContentLoaded', () => {
+        const internalLinks = document.querySelectorAll('a[href]');
+        internalLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
+                    e.preventDefault();
+                    document.body.classList.add('fade-out');
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 300);
+                }
+            });
         });
     });
-});
 </script>
 </body>
 </html>

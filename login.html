@@ -95,7 +95,6 @@
             border-radius: 0;
         }
 
-        /* Hamburger Menu for Mobile */
         .hamburger-btn { display: none; background: transparent; border: 1px solid var(--border-color); padding: 8px; cursor: pointer; color: var(--text-main); }
         .mobile-dropdown { display: none; position: absolute; top: 70px; right: 20px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; box-shadow: var(--card-shadow); z-index: 2000; flex-direction: column; gap: 12px; width: 220px; }
         .mobile-dropdown a, .mobile-dropdown button { color: var(--text-main); background: transparent; border: none; text-align: left; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer; width: 100%; }
@@ -222,71 +221,57 @@
             border-bottom: 1px solid var(--text-main);
         }
 
-        /* 🌟 เอฟเฟกต์ปุ่มขยับเมื่อเอาเมาส์ไปชี้ */
-button, .btn-auth, .custom-file-upload {
-    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
-}
+        button, .btn-auth, .custom-file-upload {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
+        }
 
-button:hover, .btn-auth:hover, .custom-file-upload:hover {
-    transform: translateY(-3px) scale(1.02) !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
-}
+        button:hover, .btn-auth:hover, .custom-file-upload:hover {
+            transform: translateY(-3px) scale(1.02) !important;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+        }
 
-button:active, .btn-auth:active, .custom-file-upload:active {
-    transform: translateY(-1px) scale(1.00) !important;
-}
+        button:active, .btn-auth:active, .custom-file-upload:active {
+            transform: translateY(-1px) scale(1.00) !important;
+        }
 
-/* 🌟 ตั้งค่าเริ่มต้นให้หน้าเว็บพร้อมทำ Fade Transition */
-body {
-    opacity: 0;
-    animation: fadeInPage 0.4s ease forwards;
-}
+        body {
+            opacity: 0;
+            animation: fadeInPage 0.4s ease forwards;
+        }
 
-@keyframes fadeInPage {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+        @keyframes fadeInPage {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-/* คลาสสำหรับจางหายตอนกดเปลี่ยนหน้า */
-body.fade-out {
-    opacity: 0;
-    transform: translateY(-6px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-/* 🌟 เปิดใช้งานระบบเปลี่ยนหน้าแบบสมูทไร้รอยต่อ (View Transitions API) */
-@view-transition {
-    navigation: auto;
-}
-
+        body.fade-out {
+            opacity: 0;
+            transform: translateY(-6px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        @view-transition {
+            navigation: auto;
+        }
     </style>
 </head>
 <body>
 
-       <nav>
-        <!-- 1. เปลี่ยนโลโก้ BodySlim ให้ลิงก์ไปที่ home.html -->
+    <nav>
         <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
-        
-        <!-- 2. เมนูหลัก (Desktop) -->
         <div class="nav-links">
             <a href="index.html">BodySlim ?</a>
             <a href="home.html">หน้าหลัก</a>
             <a href="workout.html">ตารางออกกำลังกาย</a>
             <a href="profile.html">โปรไฟล์</a>
         </div>
-
         <div class="nav-actions">
             <button id="dark-mode-toggle" class="btn-auth btn-secondary"></button>
-            
-            <!-- โซนปุ่ม Login/Register (สคริปต์ JS จะดึงข้อมูลมาแสดงทับในส่วนนี้) -->
             <div id="auth-buttons" style="display: flex; gap: 8px; border-radius: 0;">
                 <button class="btn-auth btn-secondary" onclick="window.location.href='login.html'">เข้าสู่ระบบ</button>
                 <button class="btn-auth" onclick="window.location.href='register.html'">สมัครบัญชี</button>
             </div>
-            
             <button id="hamburger-btn" class="hamburger-btn btn-auth"><i data-lucide="menu" style="width: 18px; height: 18px;"></i></button>
         </div>
-
-        <!-- 3. เมนูมือถือ (Mobile Dropdown) -->
         <div id="mobile-dropdown" class="mobile-dropdown">
             <a href="index.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> BodySlim ?</a>
             <a href="home.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> หน้าหลัก</a>
@@ -295,7 +280,6 @@ body.fade-out {
             <button id="mobile-dark-mode-btn"><i data-lucide="moon" style="width: 16px; height: 16px;"></i> โหมดสี</button>
         </div>
     </nav>
-
 
     <div class="page-container">
         <div class="auth-card">
@@ -307,12 +291,10 @@ body.fade-out {
                     <label for="username">ชื่อผู้ใช้ หรือ อีเมล</label>
                     <input type="text" id="username" placeholder="example@email.com" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="password">รหัสผ่าน</label>
                     <input type="password" id="password" placeholder="••••••••" required>
                 </div>
-                
                 <button type="submit" class="btn-submit">เข้าสู่ระบบ</button>
             </form>
 
@@ -373,42 +355,51 @@ body.fade-out {
     document.querySelector('form').addEventListener('submit', (event) => {
         event.preventDefault();
         
+        const inputUser = document.getElementById('username').value.trim();
+        const inputPass = document.getElementById('password').value;
+        
         const sessionData = localStorage.getItem('user_session');
         
-        if (sessionData) {
-            const user = JSON.parse(sessionData);
+        if (!sessionData) {
+            alert('ไม่พบข้อมูลบัญชี กรุณาสมัครสมาชิกก่อนครับ');
+            window.location.href = 'register.html';
+            return;
+        }
+
+        const user = JSON.parse(sessionData);
+
+        // ตรวจสอบชื่อผู้ใช้/อีเมล และรหัสผ่าน
+        const isUserMatch = (inputUser === user.username || inputUser === user.email);
+        const isPassMatch = (inputPass === user.password);
+
+        if (isUserMatch && isPassMatch) {
             user.isLoggedIn = true;
             localStorage.setItem('user_session', JSON.stringify(user)); 
             
             alert('เข้าสู่ระบบสำเร็จ!');
             window.location.href = 'home.html'; 
         } else {
-            alert('ไม่พบข้อมูลบัญชี กรุณาสมัครสมาชิกก่อนครับ');
-            window.location.href = 'register.html';
+            alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง ❌');
         }
     });
 
     lucide.createIcons();
-    // 🌟 เอฟเฟกต์ Fade ตอนกดเปลี่ยนหน้า
-document.addEventListener('DOMContentLoaded', () => {
-    const internalLinks = document.querySelectorAll('a[href]');
-    
-    internalLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            
-            // ตรวจสอบว่าเป็นลิงก์ภายในเว็บเดียวกันหรือไม่ และไม่ใช่ลิงก์ # หรือเปิด tab ใหม่
-            if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
-                e.preventDefault(); // หยุดการเปลี่ยนหน้าชั่วคราวเพื่อให้แอนิเมชันเล่นก่อน
-                document.body.classList.add('fade-out');
-                
-                setTimeout(() => {
-                    window.location.href = href;
-                }, 300); // รอให้แอนิเมชันเล่น 0.3 วินาทีแล้วค่อยเปลี่ยนหน้า
-            }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const internalLinks = document.querySelectorAll('a[href]');
+        internalLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
+                    e.preventDefault();
+                    document.body.classList.add('fade-out');
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 300);
+                }
+            });
         });
     });
-});
 </script>
 </body>
 </html>
