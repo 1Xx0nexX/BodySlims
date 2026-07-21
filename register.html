@@ -356,27 +356,25 @@
     </div>
 
 <script type="module">
-  // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+    // นำเข้า Firebase จาก CDN
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDB1HwSk12QUqbeWPntX3Rkhh5zBIgSgWs",
-  authDomain: "bodyslims-9b3ba.firebaseapp.com",
-  projectId: "bodyslims-9b3ba",
-  storageBucket: "bodyslims-9b3ba.firebasestorage.app",
-  messagingSenderId: "721305521887",
-  appId: "1:721305521887:web:030ef02c5fa9264508a36a",
-  measurementId: "G-NDQZJJVEVQ"
-};
+    // ตั้งค่าโปรเจกต์
+    const firebaseConfig = {
+      apiKey: "AIzaSyDB1HwSk12QUqbeWPntX3Rkhh5zBIgSgWs",
+      authDomain: "bodyslims-9b3ba.firebaseapp.com",
+      projectId: "bodyslims-9b3ba",
+      storageBucket: "bodyslims-9b3ba.firebasestorage.app",
+      messagingSenderId: "721305521887",
+      appId: "1:721305521887:web:030ef02c5fa9264508a36a",
+      measurementId: "G-NDQZJJVEVQ"
+    };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+    // เปิดใช้งาน Firebase และระบบสมาชิก
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const mobileDropdown = document.getElementById('mobile-dropdown');
     if (hamburgerBtn && mobileDropdown) {
@@ -461,6 +459,7 @@ const analytics = getAnalytics(app);
         const birthDate = document.getElementById('birth-date').value; 
 
         try {
+            // โค้ดสมัครสมาชิก Firebase
             await createUserWithEmailAndPassword(auth, email, password);
 
             const newUser = {
@@ -477,7 +476,7 @@ const analytics = getAnalytics(app);
             };
             localStorage.setItem('user_session', JSON.stringify(newUser));
 
-            showAlertModal('สำเร็จ!', 'สมัครสมาชิกผ่าน Cloud สำเร็จ!', 'success', () => {
+            showAlertModal('สำเร็จ!', 'สมัครสมาชิกเรียบร้อยแล้ว!', 'success', () => {
                 window.location.href = 'login.html';
             });
         } catch (error) {
