@@ -262,7 +262,14 @@ body.fade-out {
         <!-- COLUMN 1: ข้อมูลผู้ใช้งาน และ พลังงานประจำวัน -->
         <aside>
             <div class="card">
-                <h2><i data-lucide="contact" style="width: 18px; height: 18px;"></i> ข้อมูลผู้ใช้งาน</h2>
+                <!-- 🌟 เพิ่ม Flexbox ให้หัวข้อและปุ่มอยู่บรรทัดเดียวกัน -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin-bottom: 0;"><i data-lucide="contact" style="width: 18px; height: 18px;"></i> ข้อมูลผู้ใช้งาน</h2>
+                    <button onclick="window.location.href='profile.html'" class="btn-secondary" style="padding: 6px 12px; font-size: 12px; border-radius: 10px !important; display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="edit" style="width: 14px; height: 14px;"></i> แก้ไขข้อมูล
+                    </button>
+                </div>
+                
                 <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
                     <div><strong>เป้าหมาย:</strong> <span id="user-goal" style="color: var(--text-muted);">N/A</span></div>
                     <div><strong>อายุ:</strong> <span id="user-age" style="color: var(--text-muted);">N/A</span></div>
@@ -885,25 +892,25 @@ body.fade-out {
         });
 
         // 🌟 เอฟเฟกต์ Fade ตอนกดเปลี่ยนหน้า
-document.addEventListener('DOMContentLoaded', () => {
-    const internalLinks = document.querySelectorAll('a[href]');
-    
-    internalLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
+        document.addEventListener('DOMContentLoaded', () => {
+            const internalLinks = document.querySelectorAll('a[href]');
             
-            // ตรวจสอบว่าเป็นลิงก์ภายในเว็บเดียวกันหรือไม่ และไม่ใช่ลิงก์ # หรือเปิด tab ใหม่
-            if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
-                e.preventDefault(); // หยุดการเปลี่ยนหน้าชั่วคราวเพื่อให้แอนิเมชันเล่นก่อน
-                document.body.classList.add('fade-out');
-                
-                setTimeout(() => {
-                    window.location.href = href;
-                }, 300); // รอให้แอนิเมชันเล่น 0.3 วินาทีแล้วค่อยเปลี่ยนหน้า
-            }
+            internalLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    
+                    // ตรวจสอบว่าเป็นลิงก์ภายในเว็บเดียวกันหรือไม่ และไม่ใช่ลิงก์ # หรือเปิด tab ใหม่
+                    if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
+                        e.preventDefault(); // หยุดการเปลี่ยนหน้าชั่วคราวเพื่อให้แอนิเมชันเล่นก่อน
+                        document.body.classList.add('fade-out');
+                        
+                        setTimeout(() => {
+                            window.location.href = href;
+                        }, 300); // รอให้แอนิเมชันเล่น 0.3 วินาทีแล้วค่อยเปลี่ยนหน้า
+                    }
+                });
+            });
         });
-    });
-});
     </script> 
 </body>
 </html>
