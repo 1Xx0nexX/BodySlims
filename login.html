@@ -221,29 +221,58 @@
             border-bottom: 1px solid var(--text-main);
         }
 
+        /* 🌟 Custom Smooth Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-box {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            padding: 30px; width: 90%; max-width: 380px; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transform: scale(0.9) translateY(10px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 24px !important;
+        }
+        .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+        .modal-icon-wrapper {
+            width: 50px; height: 50px; background: rgba(220, 53, 69, 0.1);
+            color: #dc3545; border-radius: 50% !important; display: flex;
+            align-items: center; justify-content: center; margin: 0 auto 16px auto;
+        }
+        .modal-icon-wrapper.success { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .modal-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+        .modal-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+        .modal-actions { display: flex; gap: 10px; }
+        .modal-actions button { flex: 1; padding: 10px; font-size: 13px; border-radius: 12px !important; }
+        .btn-danger { background-color: #dc3545 !important; color: #ffffff !important; border-color: #dc3545 !important; }
+        .btn-danger:hover { opacity: 0.85; }
+        .btn-success { background-color: #10b981 !important; color: #ffffff !important; border-color: #10b981 !important; }
+        .btn-success:hover { opacity: 0.85; }
+
         button, .btn-auth, .custom-file-upload {
             transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
         }
-
         button:hover, .btn-auth:hover, .custom-file-upload:hover {
             transform: translateY(-3px) scale(1.02) !important;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
         }
-
         button:active, .btn-auth:active, .custom-file-upload:active {
             transform: translateY(-1px) scale(1.00) !important;
         }
-
         body {
             opacity: 0;
             animation: fadeInPage 0.4s ease forwards;
         }
-
         @keyframes fadeInPage {
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         body.fade-out {
             opacity: 0;
             transform: translateY(-6px);
@@ -255,6 +284,20 @@
     </style>
 </head>
 <body>
+
+    <!-- 🌟 Custom Smooth Modal Popup -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div id="modal-icon-container" class="modal-icon-wrapper success">
+                <i data-lucide="check" style="width: 24px; height: 24px;"></i>
+            </div>
+            <div class="modal-title" id="modal-title-text">แจ้งเตือน</div>
+            <div class="modal-desc" id="modal-desc-text">ข้อความแจ้งเตือน</div>
+            <div class="modal-actions" id="modal-actions-container">
+                <button id="modal-ok-btn" class="btn-success" style="width: 100%;">ตกลง</button>
+            </div>
+        </div>
+    </div>
 
     <nav>
         <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
@@ -288,8 +331,8 @@
             
             <form>
                 <div class="form-group">
-                    <label for="username">ชื่อผู้ใช้ หรือ อีเมล</label>
-                    <input type="text" id="username" placeholder="example@email.com" required>
+                    <label for="username">อีเมล (Email)</label>
+                    <input type="email" id="username" placeholder="example@email.com" required>
                 </div>
                 <div class="form-group">
                     <label for="password">รหัสผ่าน</label>
@@ -304,7 +347,23 @@
         </div>
     </div>
 
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDB1HwSk12QUqbewPWntX3Rkhh5zBiSgWs",
+        authDomain: "bodyslims-9b3ba.firebaseapp.com",
+        projectId: "bodyslims-9b3ba",
+        storageBucket: "bodyslims-9b3ba.firebasestorage.app",
+        messagingSenderId: "721305521887",
+        appId: "1:721305521887:web:030ef02c5fa9264508a36a",
+        measurementId: "G-NDQZJJVEVQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const mobileDropdown = document.getElementById('mobile-dropdown');
     if (hamburgerBtn && mobileDropdown) {
@@ -335,7 +394,6 @@
         }
         lucide.createIcons();
     }
-
     updateThemeUI(currentTheme);
 
     if (toggleButton) {
@@ -352,34 +410,54 @@
         });
     }
 
-    document.querySelector('form').addEventListener('submit', (event) => {
-        event.preventDefault();
-        
-        const inputUser = document.getElementById('username').value.trim();
-        const inputPass = document.getElementById('password').value;
-        
-        const sessionData = localStorage.getItem('user_session');
-        
-        if (!sessionData) {
-            alert('ไม่พบข้อมูลบัญชี กรุณาสมัครสมาชิกก่อนครับ');
-            window.location.href = 'register.html';
-            return;
+    function showAlertModal(title, desc, type, onConfirm) {
+        const modal = document.getElementById('custom-modal');
+        const titleEl = document.getElementById('modal-title-text');
+        const descEl = document.getElementById('modal-desc-text');
+        const iconWrapper = document.getElementById('modal-icon-container');
+        const actionsContainer = document.getElementById('modal-actions-container');
+
+        titleEl.innerText = title;
+        descEl.innerText = desc;
+        modal.classList.add('active');
+
+        if (type === 'success') {
+            iconWrapper.className = 'modal-icon-wrapper success';
+            iconWrapper.innerHTML = '<i data-lucide="check" style="width: 24px; height: 24px;"></i>';
+            actionsContainer.innerHTML = `<button id="modal-ok-btn" class="btn-success" style="width: 100%;">ตกลง</button>`;
+        } else {
+            iconWrapper.className = 'modal-icon-wrapper';
+            iconWrapper.innerHTML = '<i data-lucide="alert-triangle" style="width: 24px; height: 24px;"></i>';
+            actionsContainer.innerHTML = `<button id="modal-ok-btn" class="btn-danger" style="width: 100%;">ตกลง</button>`;
         }
 
-        const user = JSON.parse(sessionData);
+        document.getElementById('modal-ok-btn').addEventListener('click', () => {
+            modal.classList.remove('active');
+            if (onConfirm) onConfirm();
+        }, { once: true });
 
-        // ตรวจสอบชื่อผู้ใช้/อีเมล และรหัสผ่าน
-        const isUserMatch = (inputUser === user.username || inputUser === user.email);
-        const isPassMatch = (inputPass === user.password);
+        lucide.createIcons();
+    }
 
-        if (isUserMatch && isPassMatch) {
+    document.querySelector('form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        const email = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+
+            let sessionData = localStorage.getItem('user_session');
+            let user = sessionData ? JSON.parse(sessionData) : { username: email.split('@')[0], email: email };
             user.isLoggedIn = true;
             localStorage.setItem('user_session', JSON.stringify(user)); 
             
-            alert('เข้าสู่ระบบสำเร็จ!');
-            window.location.href = 'home.html'; 
-        } else {
-            alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง ❌');
+            showAlertModal('สำเร็จ!', 'เข้าสู่ระบบสำเร็จ!', 'success', () => {
+                window.location.href = 'home.html'; 
+            });
+        } catch (error) {
+            showAlertModal('ข้อผิดพลาด', 'อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง ❌', 'error');
         }
     });
 
