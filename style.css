@@ -1,0 +1,104 @@
+/* ==========================================================
+   1. สไตล์ภาพรวม: คลีน มินิมอล ไม่มีมุมมน
+   ========================================================== */
+* {
+    border-radius: 0px !important; /* ลบมุมโค้งมนออกทั้งหมด ให้เป็นสี่เหลี่ยมขอบคม */
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif; 
+}
+
+/* ☀️ โหมดสว่าง (Light Mode) - ขาว เทา ดำ */
+:root {
+    --bg-main: #FAFAFA;       /* พื้นหลังเว็บสีขาวนวล */
+    --bg-card: #FFFFFF;       /* พื้นหลังกล่องสีขาวบริสุทธิ์ */
+    --text-main: #111111;     /* ตัวหนังสือสีดำเข้ม */
+    --text-muted: #666666;    /* ตัวหนังสือสีเทา */
+    --border-color: #E5E5E5;  /* เส้นขอบสีเทาอ่อน */
+    --accent-color: #111111;  /* สีปุ่มหลัก (สีดำ) */
+    --accent-text: #FFFFFF;   /* ตัวหนังสือบนปุ่มหลัก (สีขาว) */
+    
+    /* ปุ่มลอยสลับโหมด */
+    --btn-dark-bg: #FFFFFF;
+    --btn-dark-border: #E5E5E5;
+    --btn-dark-shadow: rgba(0, 0, 0, 0.08);
+}
+
+/* 🌙 โหมดมืด (Dark Mode) - สลับสีตรงข้ามจาก Light Mode */
+[data-theme="dark"] {
+    /* สีพื้นฐาน (ดึงมาจากหน้า login) */
+    --bg-main: #111111;       
+    --bg-card: #1E1E1E;       
+    --text-main: #FAFAFA;     
+    --text-muted: #A0A0A0;    
+    --border-color: #2D2D2D;  
+    --accent-color: #FAFAFA;  
+    --accent-text: #111111;   
+    
+    /* สีของคอมโพเนนต์เฉพาะในหน้า index */
+    --progress-empty: #2D2D2D;
+    --progress-fill: #FAFAFA; 
+    --skeleton-bg: #2D2D2D;
+}
+
+/* ==========================================================
+   2. โครงสร้างหลัก (Body) - ลบลายตารางและออโรร่าออกแล้ว
+   ========================================================== */
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    position: relative;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* ==========================================================
+   3. สไตล์คอมโพเนนต์ (Cards & Buttons)
+   ========================================================== */
+.dashboard-card {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* ปุ่มหลัก (เช่น ปุ่มส่งข้อมูล หรือปุ่ม AI เดิมที่เปลี่ยนเป็นสไตล์ขาว-ดำ) */
+.btn-primary-purple { /* ใช้ชื่อคลาสเดิมของคุณได้เลย หรือจะเปลี่ยนชื่อทีหลังก็ได้ครับ */
+    background-color: var(--accent-color);
+    color: var(--accent-text);
+    border: 1px solid var(--border-color);
+    padding: 12px 24px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary-purple:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* ปุ่มลอยทรงกลมสำหรับสลับโหมดหน้าเว็บ (คงความกลมไว้ปุ่มเดียวเพื่อให้เด่น) */
+.floating-dark-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50% !important; /* บังคับกลม */
+    background-color: var(--btn-dark-bg);
+    border: 1px solid var(--btn-dark-border);
+    box-shadow: 0 4px 12px var(--btn-dark-shadow);
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; 
+    transition: all 0.2s ease;
+}
+
+.floating-dark-btn:hover {
+    transform: scale(1.05);
+}

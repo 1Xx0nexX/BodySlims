@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - BodySlim</title>
+    <!-- 📦 โหลด Lucide Icons ผ่าน CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+/* --- 🎨 CSS Variables & Base Styles --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border-radius: 16px; 
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+html, body, main, aside, nav, .container { border-radius: 0px !important; }
+
+:root {
+    --bg-main: #F4F6F8;       
+    --bg-card: #FFFFFF;       
+    --text-main: #1A1D20;     
+    --text-muted: #6C757D;    
+    --border-color: #E9ECEF;  
+    --accent-color: #1A1D20;  
+    --accent-text: #FFFFFF;   
+    --progress-empty: #E9ECEF;
+    --progress-fill: #1A1D20; 
+    --skeleton-bg: #E9ECEF;
+    --card-shadow: 0 8px 24px rgba(0,0,0,0.04);
+}
+
+[data-theme="dark"] {
+    --bg-main: #111111;       
+    --bg-card: #1E1E1E;       
+    --text-main: #FAFAFA;     
+    --text-muted: #A0A0A0;    
+    --border-color: #2D2D2D;  
+    --accent-color: #FAFAFA;  
+    --accent-text: #111111;   
+    --progress-empty: #2D2D2D;
+    --progress-fill: #FAFAFA; 
+    --skeleton-bg: #2D2D2D;
+    --card-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+body { background-color: var(--bg-main); color: var(--text-main); padding-bottom: 40px; }
+nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); position: relative; }
+.logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: var(--accent-color); border-radius: 0; }
+
+/* Desktop Nav Links */
+.nav-links { display: flex; align-items: center; border-radius: 0; }
+.nav-links a { color: var(--text-main); text-decoration: none; margin: 0 15px; font-size: 14px; font-weight: 600; border-radius: 0; position: relative; }
+.nav-links a.active { color: var(--accent-color); }
+.nav-links a.active::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 2px; background-color: var(--accent-color); border-radius: 2px; }
+.nav-actions { display: flex; align-items: center; gap: 8px; border-radius: 0; }
+
+/* Hamburger Menu for Mobile */
+.hamburger-btn { display: none; background: transparent; border: 1px solid var(--border-color); padding: 8px; cursor: pointer; color: var(--text-main); }
+.mobile-dropdown { display: none; position: absolute; top: 70px; right: 20px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; box-shadow: var(--card-shadow); z-index: 2000; flex-direction: column; gap: 12px; width: 220px; }
+.mobile-dropdown a, .mobile-dropdown button { color: var(--text-main); background: transparent; border: none; text-align: left; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer; width: 100%; }
+.mobile-dropdown a:hover, .mobile-dropdown button:hover { background-color: var(--bg-main); }
+
+button { background-color: var(--accent-color); color: var(--accent-text); border: 1px solid var(--border-color); padding: 10px 20px; cursor: pointer; font-weight: 600; font-size: 14px; border-radius: 12px !important; display: flex; align-items: center; justify-content: center; gap: 8px; }
+button:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.btn-secondary { background-color: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background-color: var(--border-color); }
+.btn-auth { padding: 8px 14px; font-size: 13px; }
+
+input, select { width: 100%; padding: 12px 16px; background-color: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-color); font-size: 14px; outline: none; border-radius: 12px !important; }
+input:focus, select:focus { border-color: var(--accent-color); background-color: var(--bg-card); box-shadow: 0 0 0 3px rgba(150, 150, 150, 0.1); }
+
+.container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; }
+@media (max-width: 768px) {
+    .nav-links { display: none !important; }
+    .hamburger-btn { display: flex !important; }
+    #dark-mode-toggle { display: none !important; }
+    .container { grid-template-columns: 1fr; margin: 20px auto; padding: 0 12px; gap: 16px; }
+    nav { padding: 12px 16px; }
+    .card { padding: 18px; margin-bottom: 16px; }
+}
+@media (min-width: 769px) {
+    #mobile-dark-mode-btn { display: none !important; }
+}
+
+.card { background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; margin-bottom: 24px; box-shadow: var(--card-shadow); border-radius: 20px !important; }
+.card:hover { border-color: var(--text-muted); }
+.card h2 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; color: var(--text-muted); border-radius: 0; display: flex; align-items: center; gap: 8px; }
+
+.skeleton-card { display: none; border-radius: 14px !important; }
+.skeleton-line { background: linear-gradient(90deg, var(--skeleton-bg) 25%, var(--border-color) 50%, var(--skeleton-bg) 75%); background-size: 200% 100%; animation: loading-shimmer 1.5s infinite; margin-bottom: 12px; border-radius: 8px !important; }
+@keyframes loading-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* 🌟 Custom Smooth Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+.modal-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    width: 90%;
+    max-width: 380px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    transform: scale(0.9) translateY(10px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 24px !important;
+}
+.modal-overlay.active .modal-box {
+    transform: scale(1) translateY(0);
+}
+.modal-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border-radius: 50% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+}
+.modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 8px;
+}
+.modal-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+.modal-actions button {
+    flex: 1;
+    padding: 10px;
+    font-size: 13px;
+    border-radius: 12px !important;
+}
+.btn-danger {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+    border-color: #dc3545 !important;
+}
+.btn-danger:hover {
+    opacity: 0.85;
+}
+
+/* 🌟 เอฟเฟกต์ปุ่มขยับเมื่อเอาเมาส์ไปชี้ */
+button, .btn-auth, .custom-file-upload {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
+}
+
+button:hover, .btn-auth:hover, .custom-file-upload:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+button:active, .btn-auth:active, .custom-file-upload:active {
+    transform: translateY(-1px) scale(1.00) !important;
+}
+
+/* 🌟 ตั้งค่าเริ่มต้นให้หน้าเว็บพร้อมทำ Fade Transition */
+body {
+    opacity: 0;
+    animation: fadeInPage 0.4s ease forwards;
+}
+
+@keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* คลาสสำหรับจางหายตอนกดเปลี่ยนหน้า */
+body.fade-out {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+/* 🌟 เปิดใช้งานระบบเปลี่ยนหน้าแบบสมูทไร้รอยต่อ (View Transitions API) */
+@view-transition {
+    navigation: auto;
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- 🌐 Top Navigation Bar -->
+    <nav>
+        <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
+        
+        <div class="nav-links">
+            <a href="index.html">BodySlim ?</a>
+            <a href="home.html" class="active">หน้าหลัก</a>
+            <a href="workout.html">ตารางออกกำลังกาย</a>
+            <a href="profile.html">โปรไฟล์</a>
+        </div>
+
+        <div class="nav-actions">
+            <button id="dark-mode-toggle" class="btn-auth btn-secondary"></button>
+            <div id="auth-buttons" style="display: flex; gap: 8px; border-radius: 0;">
+                <button class="btn-auth btn-secondary" onclick="window.location.href='login.html'">เข้าสู่ระบบ</button>
+                <button class="btn-auth" onclick="window.location.href='register.html'">สมัครบัญชี</button>
+            </div>
+            <button id="hamburger-btn" class="hamburger-btn btn-auth"><i data-lucide="menu" style="width: 18px; height: 18px;"></i></button>
+        </div>
+
+        <div id="mobile-dropdown" class="mobile-dropdown">
+            <a href="index.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> BodySlim ?</a>
+            <a href="home.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> หน้าหลัก</a>
+            <a href="workout.html"><i data-lucide="activity" style="width: 16px; height: 16px;"></i> ตารางออกกำลังกาย</a>
+            <a href="profile.html"><i data-lucide="user" style="width: 16px; height: 16px;"></i> โปรไฟล์</a>
+            <button id="mobile-dark-mode-btn"><i data-lucide="moon" style="width: 16px; height: 16px;"></i> โหมดสี</button>
+        </div>
+    </nav>
+
+    <!-- 🌟 Custom Smooth Modal Popup -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon-wrapper">
+                <i data-lucide="trash-2" style="width: 24px; height: 24px;"></i>
+            </div>
+            <div class="modal-title" id="modal-title-text">ยืนยันการทำรายการ</div>
+            <div class="modal-desc" id="modal-desc-text">ต้องการรีเซ็ตประวัติอาหารและแคลอรีทั้งหมดของวันนี้ใช่หรือไม่?</div>
+            <div class="modal-actions">
+                <button id="modal-cancel-btn" class="btn-secondary">ยกเลิก</button>
+                <button id="modal-confirm-btn" class="btn-danger">ยืนยัน</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🧱 Main Application Grid -->
+    <div class="container">
+        
+        <!-- COLUMN 1: ข้อมูลผู้ใช้งาน และ พลังงานประจำวัน -->
+        <aside>
+            <div class="card">
+                <h2><i data-lucide="contact" style="width: 18px; height: 18px;"></i> ข้อมูลผู้ใช้งาน</h2>
+                <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+                    <div><strong>เป้าหมาย:</strong> <span id="user-goal" style="color: var(--text-muted);">N/A</span></div>
+                    <div><strong>อายุ:</strong> <span id="user-age" style="color: var(--text-muted);">N/A</span></div>
+                    <div><strong>น้ำหนัก / ส่วนสูง:</strong> <span id="user-weight-height" style="color: var(--text-muted);">N/A</span></div>
+                    <div><strong>ค่า TDEE:</strong> <span id="user-tdee" style="color: var(--text-muted);">N/A</span></div>
+                    <div><strong>เป้าหมายแคลอรี:</strong> <span id="user-target-cal" style="color: var(--text-muted);">N/A</span></div>
+                    <div><strong>เป้าหมายโปรตีน:</strong> <span id="user-target-protein" style="color: var(--text-muted);">N/A</span></div>
+                </div>
+            </div>
+
+            <!-- 2. พลังงานประจำวัน -->
+            <div class="card">
+                <h2><i data-lucide="battery-charging" style="width: 18px; height: 18px;"></i> พลังงานประจำวัน</h2>
+                <div class="progress-container" style="margin: 16px 0; border-radius: 0;">
+                    
+                    <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 24px;">
+                        <span>ได้รับแล้ว</span>
+                        <div>
+                            <strong id="calories-current" style="color: var(--accent-color); font-size: 16px;">0</strong> / <strong id="calories-target">0</strong> kcal
+                        </div>
+                    </div>
+
+                    <!-- 🧍‍♂️ หลอดพลังงานรูปคน -->
+                    <div style="display: flex; justify-content: center; position: relative;">
+                        <div style="
+                            width: 110px; 
+                            height: 220px; 
+                            background-color: var(--progress-empty);
+                            -webkit-mask-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMjAwIj48cGF0aCBkPSJNIDUwIDEwIEEgMTIgMTIgMCAxIDAgNTAgMzQgQSAxMiAxMiAwIDEgMCA1MCAxMCBaIE0gMjcgNDIgQyAxOCA0MiAxNiA1MSAxNiA1NiBMIDE2IDEwMCBDIDE2IDEwNSAyMyAxMDUgMjMgMTAwIEwgMjUgNjUgTCAzMiA2NSBMIDMyIDE4NSBDIDMyIDE5MiA0MSAxOTIgNDEgMTg1IEwgNDEgMTE1IEwgNTkgMTE1IEwgNTkgMTg1IEMgNTkgMTkyIDY4IDE5MiA2OCAxODUgTCA2OCA2NSBMIDc1IDY1IEwgNzcgMTAwIEMgNzcgMTA1IDg0IDEwNSA4NCAxMDAgTCA4NCA1NiBDIDg0IDUxIDgyIDQyIDczIDQyIEwgMjcgNDIgWiIvPjwvc3ZnPg==');
+                            mask-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMjAwIj48cGF0aCBkPSJNIDUwIDEwIEEgMTIgMTIgMCAxIDAgNTAgMzQgQSAxMiAxMiAwIDEgMCA1MCAxMCBaIE0gMjcgNDIgQyAxOCA0MiAxNiA1MSAxNiA1NiBMIDE2IDEwMCBDIDE2IDEwNSAyMyAxMDUgMjMgMTAwIEwgMjUgNjUgTCAzMiA2NSBMIDMyIDE4NSBDIDMyIDE5MiA0MSAxOTIgNDEgMTg1IEwgNDEgMTE1IEwgNTkgMTE1IEwgNTkgMTg1IEMgNTkgMTkyIDY4IDE5MiA2OCAxODUgTCA2OCA2NSBMIDc1IDY1IEwgNzcgMTAwIEMgNzcgMTA1IDg0IDEwNSA4NCAxMDAgTCA4NCA1NiBDIDg0IDUxIDgyIDQyIDczIDQyIEwgMjcgNDIgWiIvPjwvc3ZnPg==');
+                            -webkit-mask-size: contain;
+                            mask-size: contain;
+                            -webkit-mask-repeat: no-repeat;
+                            mask-repeat: no-repeat;
+                            -webkit-mask-position: center;
+                            mask-position: center;
+                            position: relative;
+                            border-radius: 0;
+                        ">
+                            <div id="calories-bar" style="
+                                position: absolute; 
+                                bottom: 0; 
+                                left: 0; 
+                                width: 100%; 
+                                height: 0%; 
+                                background: linear-gradient(0deg, var(--progress-fill) 0%, #ff6b6b 100%);
+                                transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+                                border-radius: 0;
+                            "></div>
+                        </div>
+
+                        <div id="calories-percent-text" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            font-size: 15px;
+                            font-weight: 800;
+                            color: var(--text-main);
+                            background: var(--bg-card);
+                            padding: 2px 8px;
+                            border-radius: 8px;
+                            border: 1px solid var(--border-color);
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                        ">0%</div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; font-size: 14px; margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--border-color);">
+                        <span style="display: flex; align-items: center; gap: 4px;"><i data-lucide="beef" style="width: 14px; height: 14px;"></i> โปรตีนที่ได้รับ</span>
+                        <div>
+                            <strong id="protein-current">0</strong> / <strong id="protein-target">0</strong> g
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- COLUMN 2: ระบบ AI แนะนำอาหาร & ประวัติมื้ออาหาร -->
+        <main>
+            <div class="card">
+                <h2><i data-lucide="utensils-crossed" style="width: 18px; height: 18px;"></i> ให้ BodyAi ช่วยกะแคลอรี่ !</h2>
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+                    <input type="text" id="location-context" placeholder="พิมพ์ของที่อยากกินมาเลย (เช่น ข้าวเซเว่น, ชานม, ขนมซอง) ! !">
+                    <button id="ai-generate-btn" style="width: 100%;">
+                        <i data-lucide="zap" style="width: 16px; height: 16px;"></i> 
+                        ถาม BodyAi เลย !!
+                    </button>
+                </div>
+
+                <div class="card skeleton-card" id="ai-skeleton" style="margin-bottom: 0; border: 1px dashed var(--border-color);">
+                    <h2 style="font-size: 13px; margin-bottom: 12px;">BodyAi กำลังคิดคำตอบให้แปปนึงนะ...</h2>
+                    <div class="skeleton-line" style="width: 70%; height: 20px;"></div>
+                    <div class="skeleton-line" style="width: 30%; height: 14px; margin-bottom: 16px;"></div>
+                    <div class="skeleton-line" style="width: 100%; height: 60px;"></div>
+                </div>
+
+                <div id="ai-result-section">
+                    <div id="ai-meal-container" style="padding: 20px 16px; border: 1px dashed var(--border-color); background-color: var(--bg-main); margin-bottom: 14px; border-radius: 14px !important; text-align: center; color: var(--text-muted); font-size: 14px;">
+                        <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i data-lucide="lock" style="width: 18px; height: 18px;"></i>
+                            ( โปรดเข้าสู่ระบบ )
+                        </span>
+                    </div>
+                    <button id="save-meal-btn" class="btn-secondary" style="width: 100%; opacity: 0.5; cursor: not-allowed;" disabled>
+                        <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+                        บันทึกการกินมื้อนี้ลงระบบ
+                    </button>
+                </div>
+            </div>
+
+            <div class="card" id="today-meals-card" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h2 style="margin-bottom: 0;"><i data-lucide="clipboard-list" style="width: 18px; height: 18px;"></i> รายการอาหารวันนี้</h2>
+                    <button id="reset-meals-btn" class="btn-secondary" style="padding: 6px 12px; font-size: 12px; border-radius: 10px !important; color: #dc3545; border-color: #dc3545; display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i> รีเซ็ตวันนี้
+                    </button>
+                </div>
+                <div id="today-meals-list" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; max-height: 200px; overflow-y: auto; padding-right: 4px;">
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted); display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; text-align: center; background: var(--bg-main); padding: 10px; border-radius: 12px;">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;"><span style="display: flex; align-items: center; gap: 4px;"><i data-lucide="beef" style="width: 12px; height: 12px;"></i> โปรตีนรวม</span><b id="total-protein" style="color: var(--text-main); font-size: 14px;">0g</b></div>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;"><span style="display: flex; align-items: center; gap: 4px;"><i data-lucide="wheat" style="width: 12px; height: 12px;"></i> คาร์บรวม</span><b id="total-carb" style="color: var(--text-main); font-size: 14px;">0g</b></div>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;"><span style="display: flex; align-items: center; gap: 4px;"><i data-lucide="droplet" style="width: 12px; height: 12px;"></i> ไขมันรวม</span><b id="total-fat" style="color: var(--text-main); font-size: 14px;">0g</b></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const aiBtn = document.querySelector('#ai-generate-btn');
+            const skeletonCard = document.querySelector('#ai-skeleton');
+            const resultCard = document.querySelector('#ai-result-section');
+            const mealContainer = document.getElementById('ai-meal-container');
+            const saveMealBtn = document.getElementById('save-meal-btn');
+            const resetMealsBtn = document.getElementById('reset-meals-btn');
+            
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileDropdown = document.getElementById('mobile-dropdown');
+            if (hamburgerBtn && mobileDropdown) {
+                hamburgerBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    mobileDropdown.style.display = mobileDropdown.style.display === 'flex' ? 'none' : 'flex';
+                });
+                document.addEventListener('click', () => {
+                    mobileDropdown.style.display = 'none';
+                });
+            }
+
+            let currentMealData = null;
+
+            const toggleButton = document.querySelector('#dark-mode-toggle');
+            const mobileToggleBtn = document.querySelector('#mobile-dark-mode-btn');
+            const currentTheme = localStorage.getItem('theme') || 'light';
+
+            function updateThemeUI(theme) {
+                if (theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    if (toggleButton) toggleButton.innerHTML = '<i data-lucide="sun" style="width: 16px; height: 16px;"></i>';
+                    if (mobileToggleBtn) mobileToggleBtn.innerHTML = '<i data-lucide="sun" style="width: 16px; height: 16px;"></i> โหมดสว่าง';
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                    if (toggleButton) toggleButton.innerHTML = '<i data-lucide="moon" style="width: 16px; height: 16px;"></i>';
+                    if (mobileToggleBtn) mobileToggleBtn.innerHTML = '<i data-lucide="moon" style="width: 16px; height: 16px;"></i> โหมดมืด';
+                }
+                lucide.createIcons();
+            }
+
+            updateThemeUI(currentTheme);
+
+            if (toggleButton) {
+                toggleButton.addEventListener('click', () => {
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    updateThemeUI(theme === 'dark' ? 'light' : 'dark');
+                });
+            }
+
+            if (mobileToggleBtn) {
+                mobileToggleBtn.addEventListener('click', () => {
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    updateThemeUI(theme === 'dark' ? 'light' : 'dark');
+                });
+            }
+
+            // 🌟 ฟังก์ชันเปิด Custom Modal แทนที่ confirm() แบบเดิม
+            function showConfirmModal(title, desc, onConfirm) {
+                const modal = document.getElementById('custom-modal');
+                const titleEl = document.getElementById('modal-title-text');
+                const descEl = document.getElementById('modal-desc-text');
+                const confirmBtn = document.getElementById('modal-confirm-btn');
+                const cancelBtn = document.getElementById('modal-cancel-btn');
+
+                titleEl.innerText = title;
+                descEl.innerText = desc;
+
+                modal.classList.add('active');
+
+                // ล้าง Event เก่าป้องกันกดเบิ้ล
+                const newConfirmBtn = confirmBtn.cloneNode(true);
+                const newCancelBtn = cancelBtn.cloneNode(true);
+                confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+                cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+                newConfirmBtn.addEventListener('click', () => {
+                    modal.classList.remove('active');
+                    onConfirm();
+                });
+
+                newCancelBtn.addEventListener('click', () => {
+                    modal.classList.remove('active');
+                });
+
+                // กดพื้นหลังเพื่อปิด
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                }, { once: true });
+            }
+
+            function renderUserData() {
+                const savedData = localStorage.getItem('user_session');
+                const authButtonsDiv = document.getElementById('auth-buttons');
+                
+                const todayObj = new Date();
+                const todayStr = todayObj.toISOString().split('T')[0]; 
+                let lastActiveDate = localStorage.getItem('user_last_active_date');
+                let streak = parseInt(localStorage.getItem('user_real_streak')) || 0;
+
+                if (!lastActiveDate) {
+                    streak = 1;
+                    localStorage.setItem('user_real_streak', streak);
+                    localStorage.setItem('user_last_active_date', todayStr);
+                } else {
+                    const lastDateObj = new Date(lastActiveDate);
+                    const currDateObj = new Date(todayStr);
+                    const diffTime = currDateObj - lastDateObj;
+                    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffDays === 1) {
+                        streak += 1;
+                        localStorage.setItem('user_real_streak', streak);
+                        localStorage.setItem('user_last_active_date', todayStr);
+                    } else if (diffDays > 1) {
+                        streak = 1;
+                        localStorage.setItem('user_real_streak', streak);
+                        localStorage.setItem('user_last_active_date', todayStr);
+                    }
+                }
+
+                if (!savedData || !JSON.parse(savedData).isLoggedIn) {
+                    document.getElementById('user-goal').innerText = "N/A";
+                    document.getElementById('user-age').innerText = "N/A";
+                    document.getElementById('user-weight-height').innerText = "N/A";
+                    document.getElementById('user-tdee').innerText = "N/A";
+                    document.getElementById('user-target-cal').innerText = "N/A";
+                    document.getElementById('user-target-protein').innerText = "N/A";
+                    document.getElementById('calories-current').innerText = "0";
+                    document.getElementById('calories-target').innerText = "0";
+                    
+                    document.getElementById('calories-bar').style.height = "0%";
+                    document.getElementById('calories-percent-text').innerText = "0%";
+                    
+                    document.getElementById('protein-current').innerText = "0";
+                    document.getElementById('protein-target').innerText = "0";
+                    
+                    document.getElementById('today-meals-card').style.display = "none";
+                    
+                    if (authButtonsDiv) {
+                        authButtonsDiv.innerHTML = `
+                            <button class="btn-auth btn-secondary" onclick="window.location.href='login.html'">เข้าสู่ระบบ</button>
+                            <button class="btn-auth" onclick="window.location.href='register.html'">สมัครบัญชี</button>
+                        `;
+                    }
+
+                    mealContainer.innerHTML = `
+                        <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i data-lucide="lock" style="width: 18px; height: 18px;"></i>
+                            ( โปรดเข้าสู่ระบบ )
+                        </span>
+                    `;
+                    saveMealBtn.disabled = true;
+                    saveMealBtn.style.opacity = "0.5";
+                    saveMealBtn.style.cursor = "not-allowed";
+                    
+                    lucide.createIcons();
+                    return;
+                }
+                
+                const user = JSON.parse(savedData);
+
+                if (user.lastLogDate !== todayStr) {
+                    user.lastLogDate = todayStr;
+                    user.dailyCalories = 0;
+                    user.dailyProtein = 0;
+                    user.dailyCarb = 0;
+                    user.dailyFat = 0;
+                    user.mealsToday = [];
+                    localStorage.setItem('user_session', JSON.stringify(user));
+                }
+
+                if (authButtonsDiv) {
+                    const avatarDisplay = user.avatar ? `<img src="${user.avatar}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;">` : `<i data-lucide="circle-user" style="width: 16px; height: 16px;"></i>`;
+                    authButtonsDiv.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 4px; background: var(--bg-main); padding: 6px 10px; border-radius: 12px; border: 1px solid var(--border-color); font-size: 13px; font-weight: 700; color: #ff6b6b;">
+                                <i data-lucide="flame" style="width: 15px; height: 15px;"></i> ${streak}
+                            </div>
+                            <a href="profile.html" translate="no" style="font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; background: var(--bg-main); padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); color: var(--text-main); text-decoration: none;">
+                                 ${avatarDisplay} ${user.username}
+                            </a>
+                        </div>
+                        <button class="btn-auth btn-secondary" id="logout-btn" style="padding: 8px 12px; font-size: 13px; display: flex; align-items: center;" title="ออกจากระบบ">
+                            <i data-lucide="log-out" style="width: 14px; height: 14px;"></i>
+                        </button>
+                    `;
+                    document.getElementById('logout-btn').addEventListener('click', () => {
+                        user.isLoggedIn = false;
+                        localStorage.setItem('user_session', JSON.stringify(user));
+                        window.location.reload();
+                    });
+                }
+
+                document.getElementById('today-meals-card').style.display = "block";
+
+                if (currentMealData === null && mealContainer.innerHTML.includes('โปรดเข้าสู่ระบบ')) {
+                    mealContainer.innerHTML = `
+                        <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i data-lucide="bot" style="width: 18px; height: 18px;"></i> ทักมาได้เลย! อยากกินอะไร หรือกินอะไรไปแล้ว พิมพ์บอก BodyAi ได้เลยยย ✨
+                        </span>
+                    `;
+                }
+
+                if(user.goal) document.getElementById('user-goal').innerText = user.goal;
+
+                let calculatedAge = 16; 
+                if (user.birthDate) {
+                    const birthDateObj = new Date(user.birthDate);
+                    const today = new Date();
+                    calculatedAge = today.getFullYear() - birthDateObj.getFullYear();
+                    const monthDiff = today.getMonth() - birthDateObj.getMonth();
+                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateObj.getDate())) { calculatedAge--; }
+                }
+                document.getElementById('user-age').innerText = calculatedAge + " ปี";
+                if (user.weight && user.height) {
+                    document.getElementById('user-weight-height').innerText = `${user.weight} กก. / ${user.height} ซม.`;
+                }
+
+                if (user.weight && user.height) {
+                    let genderBonus = user.gender === 'female' ? -161 : 5;
+                    const bmr = (10 * user.weight) + (6.25 * user.height) - (5 * calculatedAge) + genderBonus;
+                    const activityMultiplier = parseFloat(user.activity || 1.375);
+                    const tdee = Math.round(bmr * activityMultiplier);
+                    document.getElementById('user-tdee').innerText = tdee + " kcal / วัน";
+
+                    let calMin = tdee - 100;
+                    let calMax = tdee + 100;
+                    let protMin = Math.round(user.weight * 1.4);
+                    let protMax = Math.round(user.weight * 1.8);
+
+                    if (user.goal && user.goal.includes("ควบคุมน้ำหนัก")) { 
+                        calMin = tdee - 500; 
+                        calMax = tdee - 300;
+                        protMin = Math.round(user.weight * 1.8);
+                        protMax = Math.round(user.weight * 2.2);
+                    } 
+                    else if (user.goal && user.goal.includes("เพิ่มกล้ามเนื้อ")) { 
+                        calMin = tdee; 
+                        calMax = tdee + 200; 
+                        protMin = Math.round(user.weight * 1.6);
+                        protMax = Math.round(user.weight * 2.0);
+                    }
+
+                    document.getElementById('user-target-cal').innerText = `${calMin} - ${calMax} kcal`;
+                    document.getElementById('calories-target').innerText = calMax; 
+                    
+                    document.getElementById('user-target-protein').innerText = `${protMin} - ${protMax} g`;
+                    document.getElementById('protein-target').innerText = `${protMin} - ${protMax}`;
+
+                    const currentCal = user.dailyCalories || 0;
+                    document.getElementById('calories-current').innerText = currentCal;
+                    
+                    const currentProtein = user.dailyProtein || 0;
+                    document.getElementById('protein-current').innerText = currentProtein;
+
+                    const percent = Math.min(Math.round((currentCal / calMax) * 100), 100);
+                    document.getElementById('calories-bar').style.height = percent + "%";
+                    
+                    const percentText = document.getElementById('calories-percent-text');
+                    if(percentText) {
+                        percentText.innerText = percent + "%";
+                        if(percent >= 100) {
+                            percentText.style.color = "#ff6b6b"; 
+                        } else {
+                            percentText.style.color = "var(--text-main)";
+                        }
+                    }
+                }
+
+                const mealsListEl = document.getElementById('today-meals-list');
+                const meals = user.mealsToday || [];
+                
+                if (meals.length === 0) {
+                    mealsListEl.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 12px 0;">ยังไม่มีการบันทึกอาหารในวันนี้</div>`;
+                } else {
+                    mealsListEl.innerHTML = meals.map((m, index) => `
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-main); padding: 10px 14px; border-radius: 10px; font-size: 13px;">
+                            <div>
+                                <strong style="color: var(--text-main);">${m.name}</strong><br>
+                                <span style="font-size: 11px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 8px;">
+                                    <span style="display:inline-flex; align-items:center; gap:2px;"><i data-lucide="beef" style="width:11px;height:11px;"></i>${m.prot}g</span> 
+                                    <span style="display:inline-flex; align-items:center; gap:2px;"><i data-lucide="wheat" style="width:11px;height:11px;"></i>${m.carb}g</span> 
+                                    <span style="display:inline-flex; align-items:center; gap:2px;"><i data-lucide="droplet" style="width:11px;height:11px;"></i>${m.fat}g</span> 
+                                    (${m.time})
+                                </span>
+                            </div>
+                            <span style="font-weight: 700; color: var(--accent-color);">${m.cal} kcal</span>
+                        </div>
+                    `).join('');
+                }
+
+                document.getElementById('total-protein').innerText = (user.dailyProtein || 0) + "g";
+                document.getElementById('total-carb').innerText = (user.dailyCarb || 0) + "g";
+                document.getElementById('total-fat').innerText = (user.dailyFat || 0) + "g";
+                
+                lucide.createIcons();
+            }
+            
+            renderUserData(); 
+
+            // 🌟 แทนที่ confirm() ด้วย Custom Modal แบบสมูท
+            if (resetMealsBtn) {
+                resetMealsBtn.addEventListener('click', () => {
+                    const savedData = localStorage.getItem('user_session');
+                    if (!savedData || !JSON.parse(savedData).isLoggedIn) return;
+
+                    showConfirmModal(
+                        'รีเซ็ตประวัติอาหารวันนี้',
+                        'ต้องการรีเซ็ตประวัติอาหาร & แคลอรีทั้งหมดของวันนี้ใช่หรือไม่? ',
+                        () => {
+                            const user = JSON.parse(savedData);
+                            user.dailyCalories = 0;
+                            user.dailyProtein = 0;
+                            user.dailyCarb = 0;
+                            user.dailyFat = 0;
+                            user.mealsToday = [];
+                            
+                            localStorage.setItem('user_session', JSON.stringify(user));
+                            renderUserData();
+                            alert('รีเซ็ตข้อมูลของวันนี้เรียบร้อยแล้วครับ! 🔄');
+                        }
+                    );
+                });
+            }
+
+            async function getMealFromGemini() {
+                const savedData = localStorage.getItem('user_session');
+                
+                if (!savedData || !JSON.parse(savedData).isLoggedIn) { 
+                    alert('กรุณาเข้าสู่ระบบก่อนใช้งาน AI ครับ'); 
+                    window.location.href = 'login.html';
+                    return; 
+                }
+
+                const k1 = "AQ.Ab8RN6LQ2-1jM-";
+                const k2 = "UjZqwMauntjID0Z5o-bpyHmXp807UGpdVn0Q";
+                const API_KEY = k1 + k2; 
+                const user = JSON.parse(savedData);
+                const locationInput = document.getElementById('location-context');
+                const location = (locationInput && locationInput.value.trim() !== '') ? locationInput.value : 'อาหารทั่วไป';
+                
+                skeletonCard.style.display = 'block';
+
+                const prompt = `คุณคือ BodyAi ผู้ช่วยโภชนาการส่วนตัวสุดน่ารัก คุยเป็นกันเองเหมือนเพื่อนสนิท ผู้ใช้งานมีเป้าหมาย: "${user.goal || 'รักษาสุขภาพ'}" 
+                สิ่งที่ผู้ใช้พิมพ์มา (อาจเป็นสถานที่, เมนูข้าว, ขนม, หรือเครื่องดื่ม): "${location}"
+                
+                หน้าที่ของคุณ:
+                1. วิเคราะห์สิ่งที่ผู้ใช้พิมพ์มา ถ้าผู้ใช้อยากกิน "ขนม" (เช่น เลย์, ขนมในเซเว่น) หรือ "เครื่องดื่ม" (เช่น ชานม, กาแฟ, น้ำหวาน) ให้แนะนำขนมหรือเครื่องดื่มนั้นจริงๆ พร้อมบอกแคลอรีตามจริง (ห้ามยัดเยียดข้าวหรืออาหารมื้อหลักให้ถ้าเขาอยากกินขนม!)
+                2. ถ้าโปรตีนหรือไขมันของสิ่งนั้นแทบไม่มี (เช่น กาแฟดำ หรือน้ำหวาน) ให้ใส่เลข 0 ไปเลย ห้ามใส่ <1
+                3. พูดคุยทักทายแบบน่ารักๆ มีอีโมจิ และให้ "ทริคการสั่ง/การกิน" แบบเพื่อนแนะนำเพื่อน
+                4. ตอบกลับมาเป็นโค้ด HTML ล้วนๆ ห้ามมีเครื่องหมาย \`\`\` คลุมหัวท้ายเด็ดขาด!
+                
+                ใช้โครงสร้าง HTML นี้เท่านั้น:
+                <div style="text-align: left; line-height: 1.6;">
+                    <p style="font-size: 14px; margin-bottom: 12px; color: var(--text-main); background: var(--bg-main); padding: 12px; border-radius: 12px; border-left: 4px solid var(--accent-color);">
+                        💬 <strong>BodyAi:</strong> [ข้อความทักทายและพูดคุยแบบเป็นกันเอง แนะนำเมนูที่สอดคล้องกับที่พิมพ์มา]
+                    </p>
+                    <h3 style="color: var(--accent-color); margin-bottom: 8px; font-size: 16px;">🍽️ [ชื่อเมนู/ขนม/เครื่องดื่ม]</h3>
+                    <p style="margin-bottom: 12px; font-size: 13px; color: var(--text-muted);">💡 <strong>ทริค:</strong> [คำแนะนำการกินให้ดีต่อเป้าหมาย]</p>
+                    <div style="background: var(--bg-card); padding: 12px; border-radius: 12px; border: 1px solid var(--border-color);">
+                        <div style="font-weight: bold; margin-bottom: 10px; font-size: 14px; text-align: center;">พลังงาน: [ตัวเลขเท่านั้น] kcal</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; font-size: 12px; text-align: center;">
+                            <div style="background: var(--bg-main); padding: 8px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                                <span style="display: flex; align-items: center; gap: 4px; color: var(--text-muted);"><i data-lucide="beef" style="width: 14px; height: 14px;"></i> โปรตีน</span>
+                                <b style="font-size: 14px; color: var(--text-main);">[ตัวเลขเท่านั้น]g</b>
+                            </div>
+                            <div style="background: var(--bg-main); padding: 8px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                                <span style="display: flex; align-items: center; gap: 4px; color: var(--text-muted);"><i data-lucide="wheat" style="width: 14px; height: 14px;"></i> คาร์บ</span>
+                                <b style="font-size: 14px; color: var(--text-main);">[ตัวเลขเท่านั้น]g</b>
+                            </div>
+                            <div style="background: var(--bg-main); padding: 8px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                                <span style="display: flex; align-items: center; gap: 4px; color: var(--text-muted);"><i data-lucide="droplet" style="width: 14px; height: 14px;"></i> ไขมัน</span>
+                                <b style="font-size: 14px; color: var(--text-main);">[ตัวเลขเท่านั้น]g</b>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+                try {
+                    const modelsRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
+                    const modelsJson = await modelsRes.json();
+                    
+                    if (!modelsRes.ok) {
+                        throw new Error(modelsJson.error?.message || "ไม่สามารถตรวจสอบรายชื่อโมเดลได้");
+                    }
+
+                    const availableModels = modelsJson.models.filter(m => 
+                        m.supportedGenerationMethods && 
+                        m.supportedGenerationMethods.includes("generateContent") &&
+                        m.name.includes("gemini")
+                    );
+
+                    let successData = null;
+                    for (let m of availableModels) {
+                        try {
+                            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/${m.name}:generateContent?key=${API_KEY}`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                            });
+                            const json = await res.json();
+                            if (res.ok && json.candidates && json.candidates[0].content) {
+                                successData = json;
+                                break;
+                            }
+                        } catch (e) {}
+                    }
+
+                    if (!successData) {
+                        throw new Error("ไม่สามารถเชื่อมต่อกับโมเดล AI ได้ กรุณาลองใหม่อีกครั้ง");
+                    }
+
+                    let recommendation = successData.candidates[0].content.parts[0].text;
+                    recommendation = recommendation.replace(/```html/gi, '').replace(/```/g, '');
+                    
+                    skeletonCard.style.display = 'none';
+                    mealContainer.innerHTML = recommendation;
+                    
+                    const mealNameMatch = recommendation.match(/🍽️\s*([^<]+)/);
+                    const calMatch = recommendation.match(/พลังงาน:\s*(\d+)/);
+                    const protMatch = recommendation.match(/โปรตีน.*?(\d+)g/s);
+                    const carbMatch = recommendation.match(/คาร์บ.*?(\d+)g/s);
+                    const fatMatch = recommendation.match(/ไขมัน.*?(\d+)g/s);
+
+                    currentMealData = {
+                        name: mealNameMatch ? mealNameMatch[1].trim() : "เมนูแนะนำจาก AI",
+                        cal: calMatch ? parseInt(calMatch[1]) : 300,
+                        prot: protMatch ? parseInt(protMatch[1]) : 0,
+                        carb: carbMatch ? parseInt(carbMatch[1]) : 0,
+                        fat: fatMatch ? parseInt(fatMatch[1]) : 0,
+                        time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
+                    };
+
+                    saveMealBtn.disabled = false;
+                    saveMealBtn.style.opacity = "1";
+                    saveMealBtn.style.cursor = "pointer";
+                    lucide.createIcons();
+
+                } catch (error) {
+                    console.error("Gemini API Error:", error);
+                    skeletonCard.style.display = 'none';
+                    
+                    mealContainer.innerHTML = `
+                        <div style='color: #dc3545; text-align: center; padding: 10px;'>
+                            <i data-lucide="alert-triangle" style="width: 24px; height: 24px; margin-bottom: 8px;"></i><br>
+                            <strong>เชื่อมต่อ AI ไม่สำเร็จ</strong><br>
+                            <span style="font-size: 12px; color: var(--text-muted);">${error.message}</span>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                }
+            }
+
+            if (aiBtn) aiBtn.addEventListener('click', getMealFromGemini);
+
+            if (saveMealBtn) {
+                saveMealBtn.addEventListener('click', () => {
+                    const savedData = localStorage.getItem('user_session');
+                    if (!savedData || !JSON.parse(savedData).isLoggedIn) {
+                        alert('กรุณาเข้าสู่ระบบก่อนบันทึกข้อมูลครับ');
+                        return;
+                    }
+                    if (!currentMealData) return;
+
+                    const user = JSON.parse(savedData);
+                    
+                    user.dailyCalories = (user.dailyCalories || 0) + currentMealData.cal;
+                    user.dailyProtein = (user.dailyProtein || 0) + currentMealData.prot;
+                    user.dailyCarb = (user.dailyCarb || 0) + currentMealData.carb;
+                    user.dailyFat = (user.dailyFat || 0) + currentMealData.fat;
+                    
+                    if (!user.mealsToday) user.mealsToday = [];
+                    user.mealsToday.unshift(currentMealData);
+
+                    localStorage.setItem('user_session', JSON.stringify(user));
+                    
+                    alert(`บันทึกเมนู "${currentMealData.name}" เรียบร้อยแล้วครับ! (+${currentMealData.cal} kcal) 🍽️`);
+                    
+                    currentMealData = null;
+                    saveMealBtn.disabled = true;
+                    saveMealBtn.style.opacity = "0.5";
+                    saveMealBtn.style.cursor = "not-allowed";
+
+                    renderUserData(); 
+                });
+            }
+            lucide.createIcons();
+        });
+
+        // 🌟 เอฟเฟกต์ Fade ตอนกดเปลี่ยนหน้า
+document.addEventListener('DOMContentLoaded', () => {
+    const internalLinks = document.querySelectorAll('a[href]');
+    
+    internalLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            // ตรวจสอบว่าเป็นลิงก์ภายในเว็บเดียวกันหรือไม่ และไม่ใช่ลิงก์ # หรือเปิด tab ใหม่
+            if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
+                e.preventDefault(); // หยุดการเปลี่ยนหน้าชั่วคราวเพื่อให้แอนิเมชันเล่นก่อน
+                document.body.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 300); // รอให้แอนิเมชันเล่น 0.3 วินาทีแล้วค่อยเปลี่ยนหน้า
+            }
+        });
+    });
+});
+    </script> 
+</body>
+</html>

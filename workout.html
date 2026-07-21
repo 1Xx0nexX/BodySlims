@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout - BodySlim</title>
+    <!-- 📦 โหลด Lucide Icons ผ่าน CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+/* --- 🎨 CSS Variables & Base Styles --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border-radius: 16px; 
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+html, body, main, aside, nav, .container { border-radius: 0px !important; }
+
+:root {
+    --bg-main: #F4F6F8;       
+    --bg-card: #FFFFFF;       
+    --text-main: #1A1D20;     
+    --text-muted: #6C757D;    
+    --border-color: #E9ECEF;  
+    --accent-color: #1A1D20;  
+    --accent-text: #FFFFFF;   
+    --skeleton-bg: #E9ECEF;
+    --card-shadow: 0 8px 24px rgba(0,0,0,0.04);
+}
+
+[data-theme="dark"] {
+    --bg-main: #111111;       
+    --bg-card: #1E1E1E;       
+    --text-main: #FAFAFA;     
+    --text-muted: #A0A0A0;    
+    --border-color: #2D2D2D;  
+    --accent-color: #FAFAFA;  
+    --accent-text: #111111;   
+    --skeleton-bg: #2D2D2D;
+    --card-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+[data-theme="dark"] html, [data-theme="dark"] body {
+    background-color: #111111 !important;
+}
+
+body { 
+    background-color: var(--bg-main); 
+    color: var(--text-main); 
+    padding-bottom: 40px; 
+    opacity: 0;
+    animation: fadeInPage 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 🌟 แอนิเมชันเปิดหน้า (Fade & Slide นุ่มนวล ไม่เร็วเกินไป) */
+@keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* คลาสสำหรับจางหายตอนกดเปลี่ยนหน้าแบบสมูทละมุน */
+body.fade-out {
+    opacity: 0 !important;
+    transform: translateY(-8px) !important;
+    transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), transform 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); position: relative; }
+.logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: var(--accent-color); border-radius: 0; cursor: pointer; }
+
+/* Desktop Nav Links */
+.nav-links { display: flex; align-items: center; border-radius: 0; }
+.nav-links a { color: var(--text-main); text-decoration: none; margin: 0 15px; font-size: 14px; font-weight: 600; border-radius: 0; position: relative; cursor: pointer; }
+.nav-links a.active { color: var(--accent-color); }
+.nav-links a.active::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 2px; background-color: var(--accent-color); border-radius: 2px; }
+.nav-actions { display: flex; align-items: center; gap: 8px; border-radius: 0; }
+
+/* Hamburger Menu for Mobile */
+.hamburger-btn { display: none; background: transparent; border: 1px solid var(--border-color); padding: 8px; cursor: pointer; color: var(--text-main); }
+.mobile-dropdown { display: none; position: absolute; top: 70px; right: 20px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; box-shadow: var(--card-shadow); z-index: 2000; flex-direction: column; gap: 12px; width: 220px; }
+.mobile-dropdown a, .mobile-dropdown button { color: var(--text-main); background: transparent; border: none; text-align: left; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer; width: 100%; }
+.mobile-dropdown a:hover, .mobile-dropdown button:hover { background-color: var(--bg-main); }
+
+button { background-color: var(--accent-color); color: var(--accent-text); border: 1px solid var(--border-color); padding: 10px 20px; cursor: pointer; font-weight: 600; font-size: 14px; border-radius: 12px !important; display: flex; align-items: center; justify-content: center; gap: 8px; }
+button:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.btn-secondary { background-color: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background-color: var(--border-color); }
+.btn-auth { padding: 8px 14px; font-size: 13px; }
+
+input, select { width: 100%; padding: 12px 16px; background-color: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-color); font-size: 14px; outline: none; border-radius: 12px !important; }
+input:focus, select:focus { border-color: var(--accent-color); background-color: var(--bg-card); box-shadow: 0 0 0 3px rgba(150, 150, 150, 0.1); }
+
+@media (max-width: 768px) {
+    .nav-links { display: none !important; }
+    .hamburger-btn { display: flex !important; }
+    #dark-mode-toggle { display: none !important; }
+    .container { margin: 20px auto; padding: 0 12px; }
+    nav { padding: 12px 16px; }
+}
+@media (min-width: 769px) {
+    #mobile-dark-mode-btn { display: none !important; }
+}
+
+.container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+.card { background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; margin-bottom: 24px; box-shadow: var(--card-shadow); border-radius: 20px !important; }
+.card h2 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; color: var(--text-muted); border-radius: 0; display: flex; align-items: center; gap: 8px; }
+
+.skeleton-line { background: linear-gradient(90deg, var(--skeleton-bg) 25%, var(--border-color) 50%, var(--skeleton-bg) 75%); background-size: 200% 100%; animation: loading-shimmer 1.5s infinite; margin-bottom: 12px; border-radius: 8px !important; }
+@keyframes loading-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* 🌟 Custom Smooth Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; opacity: 0; visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal-box {
+    background: var(--bg-card); border: 1px solid var(--border-color);
+    padding: 30px; width: 90%; max-width: 380px; text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    transform: scale(0.9) translateY(10px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 24px !important;
+}
+.modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+.modal-icon-wrapper {
+    width: 50px; height: 50px; background: rgba(220, 53, 69, 0.1);
+    color: #dc3545; border-radius: 50% !important; display: flex;
+    align-items: center; justify-content: center; margin: 0 auto 16px auto;
+}
+.modal-icon-wrapper.success { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.modal-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+.modal-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-actions button { flex: 1; padding: 10px; font-size: 13px; border-radius: 12px !important; }
+.btn-danger { background-color: #dc3545 !important; color: #ffffff !important; border-color: #dc3545 !important; }
+.btn-danger:hover { opacity: 0.85; }
+.btn-success { background-color: #10b981 !important; color: #ffffff !important; border-color: #10b981 !important; }
+.btn-success:hover { opacity: 0.85; }
+
+/* 🌟 เอฟเฟกต์ปุ่มขยับเมื่อเอาเมาส์ไปชี้ */
+button, .btn-auth, .custom-file-upload {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
+}
+button:hover, .btn-auth:hover, .custom-file-upload:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+}
+button:active, .btn-auth:active, .custom-file-upload:active {
+    transform: translateY(-1px) scale(1.00) !important;
+}
+    </style>
+</head>
+<body>
+
+    <!-- 🌐 Top Navigation Bar -->
+    <nav>
+        <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
+        
+        <div class="nav-links">
+            <a href="index.html">BodySlim ?</a>
+            <a href="home.html">หน้าหลัก</a>
+            <a href="workout.html" class="active">ตารางออกกำลังกาย</a>
+            <a href="profile.html">โปรไฟล์</a>
+        </div>
+
+        <div class="nav-actions">
+            <button id="dark-mode-toggle" class="btn-auth btn-secondary"></button>
+            <div id="auth-buttons" style="display: flex; gap: 8px; border-radius: 0;">
+                <button class="btn-auth btn-secondary" onclick="transitionToPage('login.html')">เข้าสู่ระบบ</button>
+                <button class="btn-auth" onclick="transitionToPage('register.html')">สมัครบัญชี</button>
+            </div>
+            <button id="hamburger-btn" class="hamburger-btn btn-auth"><i data-lucide="menu" style="width: 18px; height: 18px;"></i></button>
+        </div>
+
+        <div id="mobile-dropdown" class="mobile-dropdown">
+            <a href="index.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> BodySlim ?</a>
+            <a href="home.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> หน้าหลัก</a>
+            <a href="workout.html"><i data-lucide="activity" style="width: 16px; height: 16px;"></i> ตารางออกกำลังกาย</a>
+            <a href="profile.html"><i data-lucide="user" style="width: 16px; height: 16px;"></i> โปรไฟล์</a>
+            <button id="mobile-dark-mode-btn"><i data-lucide="moon" style="width: 16px; height: 16px;"></i> โหมดสี</button>
+        </div>
+    </nav>
+
+    <!-- 🌟 Custom Smooth Modal Popup (ยืนยัน) -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div id="modal-icon-container" class="modal-icon-wrapper">
+                <i data-lucide="trash-2" style="width: 24px; height: 24px;"></i>
+            </div>
+            <div class="modal-title" id="modal-title-text">ยืนยันการทำรายการ</div>
+            <div class="modal-desc" id="modal-desc-text">คุณต้องการรีเซ็ตตารางออกกำลังกายประจำวันนี้ใช่หรือไม่?</div>
+            <div class="modal-actions" id="modal-actions-container">
+                <button id="modal-cancel-btn" class="btn-secondary">ยกเลิก</button>
+                <button id="modal-confirm-btn" class="btn-danger">ยืนยัน</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🧱 Main Container สำหรับหน้าออกกำลังกาย -->
+    <div class="container">
+        <!-- 📋 การ์ดแสดงตารางที่บันทึกไว้ทำทุกวัน -->
+        <div class="card" id="saved-workout-card" style="display: none; border: 2px solid #e0245e;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 style="margin-bottom: 0; color: #e0245e;"><i data-lucide="heart" style="width: 18px; height: 18px;"></i> ตารางออกกำลังกายประจำวันของฉัน</h2>
+                <button id="reset-saved-workout-btn" class="btn-secondary" style="padding: 6px 12px; font-size: 12px; border-radius: 10px !important; color: #dc3545; border-color: #dc3545; display: flex; align-items: center; gap: 4px;">
+                    <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i> รีเซ็ตตารางถูกใจ
+                </button>
+            </div>
+            <div id="saved-workout-content" style="background-color: var(--bg-main); padding: 16px; border: 1px dashed var(--border-color); border-radius: 12px !important; font-size: 13px;">
+                <!-- เรนเดอร์ตารางที่ชอบตรงนี้ -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i data-lucide="activity-square" style="width: 18px; height: 18px;"></i> ออกแบบตารางออกกำลังกายด้วย AI</h2>
+            
+            <div id="workout-container" style="padding: 30px 20px; border: 1px dashed var(--border-color); background-color: var(--bg-main); text-align: center; color: var(--text-muted); font-size: 14px;">
+                <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i data-lucide="lock" style="width: 18px; height: 18px;"></i>
+                    ( โปรดเข้าสู่ระบบ )
+                </span>
+            </div>
+
+            <div id="workout-ai-zone" style="display: none; border-radius: 0;">
+                <div style="margin-bottom: 16px; border-radius: 0;">
+                    <label style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">ช่วงเวลาที่สะดวก:</label>
+                    <select id="workout-time">
+                        <option value="morning">ช่วงเช้า</option>
+                        <option value="evening">ช่วงเย็น</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 16px; border-radius: 0;">
+                    <label style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">ระดับความพร้อม:</label>
+                    <select id="workout-level">
+                        <option value="beginner">มือใหม่เพิ่งเริ่ม (เหนื่อยง่าย)</option>
+                        <option value="intermediate">ปานกลาง (พอมีพื้นฐาน)</option>
+                        <option value="advanced">เล่นหนัก (ฟิตสุดยอด)</option>
+                    </select>
+                </div>
+                <!-- ✍️ ช่องกรอก Prompt เพิ่มเติม -->
+                <div style="margin-bottom: 20px; border-radius: 0;">
+                    <label style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">ความต้องการเพิ่มเติม / หมายเหตุ:</label>
+                    <input type="text" id="workout-custom-prompt" placeholder="เช่น มีอาการเจ็บเข่า, พักกี่นาที , มีดัมเบลคู่เดียว, เน้นหน้าท้อง">
+                </div>
+                
+                <button id="ai-workout-btn" style="width: 100%; margin-bottom: 16px;">
+                    <i data-lucide="bot" style="width: 16px; height: 16px;"></i> 
+                    ให้ BodyAI จัดตารางให้เลย !!
+                </button>
+                <div id="ai-workout-skeleton" style="display: none; font-size: 13px; color: var(--text-muted); text-align: center; padding: 20px 0; border-radius: 0;">
+                    <div class="skeleton-line" style="width: 90%; height: 16px; margin: 0 auto 10px auto;"></div>
+                    <div class="skeleton-line" style="width: 60%; height: 14px; margin: 0 auto;"></div>
+                    <p style="margin-top: 10px;">กำลังให้เทรนเนอร์ AI วิเคราะห์ตารางฝึก...</p>
+                </div>
+                <div id="ai-workout-result" style="display: none; background-color: var(--bg-main); padding: 16px; border: 1px dashed var(--border-color); border-radius: 12px !important; margin-bottom: 12px;">
+                </div>
+                <!-- ปุ่มถูกใจ & บันทึกตาราง -->
+                <button id="save-workout-btn" style="width: 100%; background-color: #e0245e; color: #fff; display: none;">
+                    <i data-lucide="heart" style="width: 16px; height: 16px;"></i> ถูกใจ & บันทึกตารางนี้ไว้ทำทุกวัน
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const aiWorkoutBtn = document.getElementById('ai-workout-btn');
+            const workoutContainer = document.getElementById('workout-container');
+            const workoutAiZone = document.getElementById('workout-ai-zone');
+            const saveWorkoutBtn = document.getElementById('save-workout-btn');
+            const savedWorkoutCard = document.getElementById('saved-workout-card');
+            const savedWorkoutContent = document.getElementById('saved-workout-content');
+            const resetSavedWorkoutBtn = document.getElementById('reset-saved-workout-btn');
+
+            let latestGeneratedWorkout = "";
+
+            // Hamburger Menu Toggle
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileDropdown = document.getElementById('mobile-dropdown');
+            if (hamburgerBtn && mobileDropdown) {
+                hamburgerBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    mobileDropdown.style.display = mobileDropdown.style.display === 'flex' ? 'none' : 'flex';
+                });
+                document.addEventListener('click', () => {
+                    mobileDropdown.style.display = 'none';
+                });
+            }
+
+            // Theme Management
+            const toggleButton = document.querySelector('#dark-mode-toggle');
+            const mobileToggleBtn = document.querySelector('#mobile-dark-mode-btn');
+            const currentTheme = localStorage.getItem('theme') || 'light';
+
+            function updateThemeUI(theme) {
+                if (theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    if (toggleButton) toggleButton.innerHTML = '<i data-lucide="sun" style="width: 16px; height: 16px;"></i>';
+                    if (mobileToggleBtn) mobileToggleBtn.innerHTML = '<i data-lucide="sun" style="width: 16px; height: 16px;"></i> โหมดสว่าง';
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                    if (toggleButton) toggleButton.innerHTML = '<i data-lucide="moon" style="width: 16px; height: 16px;"></i>';
+                    if (mobileToggleBtn) mobileToggleBtn.innerHTML = '<i data-lucide="moon" style="width: 16px; height: 16px;"></i> โหมดมืด';
+                }
+                lucide.createIcons();
+            }
+
+            updateThemeUI(currentTheme);
+
+            if (toggleButton) {
+                toggleButton.addEventListener('click', () => {
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    updateThemeUI(theme === 'dark' ? 'light' : 'dark');
+                });
+            }
+
+            if (mobileToggleBtn) {
+                mobileToggleBtn.addEventListener('click', () => {
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    updateThemeUI(theme === 'dark' ? 'light' : 'dark');
+                });
+            }
+
+            // 🌟 ฟังก์ชันเปิด Custom Modal (แบบยืนยัน และ แบบแจ้งเตือนสำเร็จ)
+            function showModal(title, desc, type, onConfirm) {
+                const modal = document.getElementById('custom-modal');
+                const titleEl = document.getElementById('modal-title-text');
+                const descEl = document.getElementById('modal-desc-text');
+                const iconWrapper = document.getElementById('modal-icon-container');
+                const actionsContainer = document.getElementById('modal-actions-container');
+
+                titleEl.innerText = title;
+                descEl.innerText = desc;
+                modal.classList.add('active');
+
+                if (type === 'success') {
+                    iconWrapper.className = 'modal-icon-wrapper success';
+                    iconWrapper.innerHTML = '<i data-lucide="check" style="width: 24px; height: 24px;"></i>';
+                    actionsContainer.innerHTML = `<button id="modal-ok-btn" class="btn-success" style="width: 100%;">ตกลง</button>`;
+                    
+                    document.getElementById('modal-ok-btn').addEventListener('click', () => {
+                        modal.classList.remove('active');
+                        if (onConfirm) onConfirm();
+                    }, { once: true });
+                } else {
+                    iconWrapper.className = 'modal-icon-wrapper';
+                    iconWrapper.innerHTML = '<i data-lucide="trash-2" style="width: 24px; height: 24px;"></i>';
+                    actionsContainer.innerHTML = `
+                        <button id="modal-cancel-btn" class="btn-secondary">ยกเลิก</button>
+                        <button id="modal-confirm-btn" class="btn-danger">ยืนยัน</button>
+                    `;
+
+                    document.getElementById('modal-cancel-btn').addEventListener('click', () => {
+                        modal.classList.remove('active');
+                    }, { once: true });
+
+                    document.getElementById('modal-confirm-btn').addEventListener('click', () => {
+                        modal.classList.remove('active');
+                        if (onConfirm) onConfirm();
+                    }, { once: true });
+                }
+                lucide.createIcons();
+            }
+
+            // ตรวจสอบสถานะ Login และโหลดตารางที่บันทึกไว้
+            function checkAuth() {
+                const savedData = localStorage.getItem('user_session');
+                const authButtonsDiv = document.getElementById('auth-buttons');
+                
+                // 🌟 ระบบคำนวณ Streak
+                const todayObj = new Date();
+                const todayStr = todayObj.toISOString().split('T')[0]; 
+                let lastActiveDate = localStorage.getItem('user_last_active_date');
+                let streak = parseInt(localStorage.getItem('user_real_streak')) || 0;
+
+                if (!lastActiveDate) {
+                    streak = 1;
+                    localStorage.setItem('user_real_streak', streak);
+                    localStorage.setItem('user_last_active_date', todayStr);
+                } else {
+                    const lastDateObj = new Date(lastActiveDate);
+                    const currDateObj = new Date(todayStr);
+                    const diffTime = currDateObj - lastDateObj;
+                    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffDays === 1) {
+                        streak += 1;
+                        localStorage.setItem('user_real_streak', streak);
+                        localStorage.setItem('user_last_active_date', todayStr);
+                    } else if (diffDays > 1) {
+                        streak = 1;
+                        localStorage.setItem('user_real_streak', streak);
+                        localStorage.setItem('user_last_active_date', todayStr);
+                    }
+                }
+
+                if (!savedData || !JSON.parse(savedData).isLoggedIn) {
+                    workoutContainer.style.display = "block";
+                    workoutAiZone.style.display = "none";
+                    savedWorkoutCard.style.display = "none";
+                    
+                    if (authButtonsDiv) {
+                        authButtonsDiv.innerHTML = `
+                            <button class="btn-auth btn-secondary" onclick="transitionToPage('login.html')">เข้าสู่ระบบ</button>
+                            <button class="btn-auth" onclick="transitionToPage('register.html')">สมัครบัญชี</button>
+                        `;
+                    }
+                    lucide.createIcons();
+                    return;
+                }
+
+                const user = JSON.parse(savedData);
+                workoutContainer.style.display = "none";
+                workoutAiZone.style.display = "block";
+
+                if (user.savedWorkoutRoutine) {
+                    savedWorkoutCard.style.display = "block";
+                    savedWorkoutContent.innerHTML = user.savedWorkoutRoutine;
+                } else {
+                    savedWorkoutCard.style.display = "none";
+                }
+
+                if (authButtonsDiv) {
+                    const avatarDisplay = user.avatar ? `<img src="${user.avatar}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;">` : `<i data-lucide="circle-user" style="width: 16px; height: 16px;"></i>`;
+                    
+                    authButtonsDiv.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 4px; background: var(--bg-main); padding: 6px 10px; border-radius: 12px; border: 1px solid var(--border-color); font-size: 13px; font-weight: 700; color: #ff6b6b;">
+                                <i data-lucide="flame" style="width: 15px; height: 15px;"></i> ${streak}
+                            </div>
+                            <a onclick="transitionToPage('profile.html')" translate="no" style="font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; background: var(--bg-main); padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); color: var(--text-main); text-decoration: none; cursor: pointer;">
+                                 ${avatarDisplay} ${user.username}
+                            </a>
+                        </div>
+                        <button class="btn-auth btn-secondary" id="logout-btn" style="padding: 8px 12px; font-size: 13px; display: flex; align-items: center;" title="ออกจากระบบ">
+                            <i data-lucide="log-out" style="width: 14px; height: 14px;"></i>
+                        </button>
+                    `;
+                    document.getElementById('logout-btn').addEventListener('click', () => {
+                        user.isLoggedIn = false;
+                        localStorage.setItem('user_session', JSON.stringify(user));
+                        window.location.reload();
+                    });
+                }
+                lucide.createIcons();
+            }
+
+            checkAuth();
+
+            if (saveWorkoutBtn) {
+                saveWorkoutBtn.addEventListener('click', () => {
+                    const savedData = localStorage.getItem('user_session');
+                    if (!savedData) return;
+                    const user = JSON.parse(savedData);
+
+                    user.savedWorkoutRoutine = latestGeneratedWorkout;
+                    localStorage.setItem('user_session', JSON.stringify(user));
+
+                    checkAuth();
+                    showModal('สำเร็จ!', '❤️ บันทึกตารางออกกำลังกายนี้ไว้ทำประจำวันเรียบร้อยแล้ว !', 'success');
+                });
+            }
+
+            if (resetSavedWorkoutBtn) {
+                resetSavedWorkoutBtn.addEventListener('click', () => {
+                    const savedData = localStorage.getItem('user_session');
+                    if (!savedData) return;
+
+                    showModal(
+                        'รีเซ็ตตารางออกกำลังกาย',
+                        'คุณต้องการรีเซ็ตหรือลบตารางออกกำลังกายประจำวันนี้ใช่หรือไม่? ',
+                        'confirm',
+                        () => {
+                            const user = JSON.parse(savedData);
+                            user.savedWorkoutRoutine = null;
+                            localStorage.setItem('user_session', JSON.stringify(user));
+                            checkAuth();
+                            showModal('รีเซ็ตสำเร็จ', 'รีเซ็ตตารางประจำวันเรียบร้อยแล้วครับ สามารถกดจัดตารางใหม่ได้เลย! 🔄', 'success');
+                        }
+                    );
+                });
+            }
+
+            if (aiWorkoutBtn) {
+                aiWorkoutBtn.addEventListener('click', async () => {
+                    const savedData = localStorage.getItem('user_session');
+                    if (!savedData || !JSON.parse(savedData).isLoggedIn) {
+                        alert('กรุณาเข้าสู่ระบบก่อนใช้งานครับ');
+                        return;
+                    }
+                    const user = JSON.parse(savedData);
+
+                    let calculatedAge = 17;
+                    if (user.birthDate) {
+                        const birthDateObj = new Date(user.birthDate);
+                        const today = new Date();
+                        calculatedAge = today.getFullYear() - birthDateObj.getFullYear();
+                    }
+
+                    const timeSelected = document.getElementById('workout-time').options[document.getElementById('workout-time').selectedIndex].text;
+                    const levelSelected = document.getElementById('workout-level').options[document.getElementById('workout-level').selectedIndex].text;
+                    const customPromptInput = document.getElementById('workout-custom-prompt');
+                    const customPromptText = customPromptInput ? customPromptInput.value.trim() : '';
+
+                    const skeleton = document.getElementById('ai-workout-skeleton');
+                    const result = document.getElementById('ai-workout-result');
+                    aiWorkoutBtn.style.display = "none"; 
+                    result.style.display = "none"; 
+                    saveWorkoutBtn.style.display = "none";
+                    skeleton.style.display = "block";
+
+                    const k1 = "AQ.Ab8RN6LQ2-1jM-";
+                    const k2 = "UjZqwMauntjID0Z5o-bpyHmXp807UGpdVn0Q";
+                    const API_KEY = k1 + k2;
+                    const prompt = `คุณคือเทรนเนอร์ฟิตเนสผู้เชี่ยวชาญ ผู้ใช้งานมีเป้าหมาย: "${user.goal || 'รักษาสุขภาพ'}", อายุ: "${calculatedAge} ปี", น้ำหนัก: "${user.weight || 70} กก.", ส่วนสูง: "${user.height || 170} ซม."
+                    ต้องการตารางออกกำลังกายในช่วงเวลา: "${timeSelected}", ระดับความพร้อม: "${levelSelected}"
+                    หมายเหตุ / ความต้องการเพิ่มเติมจากผู้ใช้: "${customPromptText ? customPromptText : 'ไม่มีข้อจำกัดพิเศษ'}"
+                    
+                    กฎเหล็ก:
+                    1. ออกแบบตารางออกกำลังกายให้สอดคล้องกับข้อมูลสัดส่วน เป้าหมาย และความต้องการเพิ่มเติมของผู้ใช้
+                    2. ในตอนท้ายต้องมีคำแนะนำหรือข้อความเตือนว่า: "ถ้าไหวเท่าไหนก็เท่านั้น เน้นสุด เน้นฟอร์ม ถ้าไม่ไหวหรือเริ่มเจ็บให้หยุดพักทันที"
+                    3. ตอบกลับมาเป็นโค้ด HTML ล้วนๆ ห้ามมีเครื่องหมาย \`\`\`html คลุมหัวท้ายเด็ดขาด!
+                    
+                    ใช้โครงสร้าง HTML นี้เท่านั้น:
+                    <div style="text-align: left; font-size: 13px; line-height: 1.6;">
+                        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">
+                            <i data-lucide="clock" style="width: 12px; height: 12px;"></i> <strong>ฝึก${timeSelected}</strong> | ${levelSelected}
+                        </div>
+                        <h4 style="font-size: 14px; font-weight: 700; color: var(--accent-color); margin-bottom: 8px;">🏋️‍♂️ ตารางฝึกของคุณ</h4>
+                        <ul style="list-style: none; padding-left: 0; line-height: 1.8; margin-bottom: 12px;">
+                            <li>• [ชื่อท่าออกกำลังกาย พร้อมจำนวนเซตและครั้ง]</li>
+                            <li>• [ชื่อท่าออกกำลังกาย พร้อมจำนวนเซตและครั้ง]</li>
+                            <li>• [ชื่อท่าออกกำลังกาย พร้อมจำนวนเซตและครั้ง]</li>
+                        </ul>
+                        <div style="font-size: 11px; color: #dc3545; background: var(--bg-main); padding: 8px; border-radius: 8px; border: 1px dashed var(--border-color);">
+                            ⚠️ <strong>คำแนะนำจากเทรนเนอร์:</strong> ถ้าไหวเท่าไหนก็เท่านั้น เน้นสุด เน้นฟอร์ม! ถ้าไม่ไหวหรือเริ่มมีอาการเจ็บ ให้หยุดพักทันทีห้ามฝืน
+                        </div>
+                    </div>`;
+
+                    try {
+                        const modelsRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
+                        const modelsJson = await modelsRes.json();
+                        
+                        const availableModels = modelsJson.models.filter(m => 
+                            m.supportedGenerationMethods && 
+                            m.supportedGenerationMethods.includes("generateContent") &&
+                            m.name.includes("gemini")
+                        );
+
+                        let successData = null;
+                        for (let m of availableModels) {
+                            try {
+                                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/${m.name}:generateContent?key=${API_KEY}`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                                });
+                                const json = await res.json();
+                                if (res.ok && json.candidates && json.candidates[0].content) {
+                                    successData = json;
+                                    break;
+                                }
+                            } catch (e) {}
+                        }
+
+                        if (!successData) {
+                            throw new Error("ไม่สามารถเชื่อมต่อ AI ได้");
+                        }
+
+                        let workoutHtml = successData.candidates[0].content.parts[0].text;
+                        workoutHtml = workoutHtml.replace(/```html/gi, '').replace(/```/g, '');
+                        latestGeneratedWorkout = workoutHtml;
+
+                        skeleton.style.display = "none"; 
+                        result.style.display = "block"; 
+                        aiWorkoutBtn.style.display = "flex"; 
+                        saveWorkoutBtn.style.display = "flex";
+                        result.innerHTML = workoutHtml;
+                        lucide.createIcons();
+
+                    } catch (error) {
+                        skeleton.style.display = "none"; 
+                        aiWorkoutBtn.style.display = "flex";
+                        result.style.display = "block";
+                        result.innerHTML = `<span style="color: #dc3545; font-size: 12px;">เกิดข้อผิดพลาดในการโหลดตารางออกกำลังกายจาก AI</span>`;
+                        lucide.createIcons();
+                    }
+                });
+            }
+            lucide.createIcons();
+        });
+
+        // 🌟 ฟังก์ชันคุมจังหวะการ Fade ให้นุ่มนวลกำลังดี
+        function transitionToPage(url) {
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = url;
+            }, 450);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const internalLinks = document.querySelectorAll('a[href]');
+            internalLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
+                        e.preventDefault();
+                        transitionToPage(href);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

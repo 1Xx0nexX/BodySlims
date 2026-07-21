@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BodySlim</title>
+    <!-- 📦 โหลด Lucide Icons ผ่าน CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border-radius: 16px; 
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+html, body { 
+    border-radius: 0px !important; 
+    scroll-behavior: smooth; 
+    background-color: var(--bg-main);
+}
+
+:root {
+    --bg-main: #F4F6F8;       
+    --bg-card: #FFFFFF;       
+    --text-main: #1A1D20;     
+    --text-muted: #6C757D;    
+    --border-color: #E9ECEF;  
+    --accent-color: #1A1D20;  
+    --accent-text: #FFFFFF;   
+    --card-shadow: 0 12px 32px rgba(0,0,0,0.06);
+}
+
+[data-theme="dark"] {
+    --bg-main: #111111;       
+    --bg-card: #1E1E1E;       
+    --text-main: #FAFAFA;     
+    --text-muted: #A0A0A0;    
+    --border-color: #2D2D2D;  
+    --accent-color: #FAFAFA;  
+    --accent-text: #111111;   
+    --card-shadow: 0 12px 32px rgba(0,0,0,0.3);
+}
+
+[data-theme="dark"] html, [data-theme="dark"] body {
+    background-color: #111111 !important;
+}
+
+body { 
+    color: var(--text-main); 
+    overflow-x: hidden; 
+    position: relative; 
+    opacity: 0;
+    animation: fadeInPage 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 🌟 แอนิเมชันเปิดหน้า (Fade & Slide นุ่มนวล ไม่เร็วเกินไป) */
+@keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* คลาสสำหรับจางหายตอนกดเปลี่ยนหน้าแบบสมูท */
+body.fade-out {
+    opacity: 0 !important;
+    transform: translateY(-10px) !important;
+    transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), transform 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* 🌟 ลำแสงสาดส่องลงมา */
+.light-ray-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
+}
+.light-ray-1 {
+    position: absolute;
+    top: -30%;
+    left: 10%;
+    width: 700px;
+    height: 1400px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(255, 255, 255, 0.35) 40%, transparent 75%);
+    transform: rotate(-25deg);
+    filter: blur(60px);
+}
+.light-ray-2 {
+    position: absolute;
+    top: -20%;
+    right: 5%;
+    width: 600px;
+    height: 1200px;
+    background: linear-gradient(225deg, rgba(255, 107, 107, 0.25) 0%, rgba(59, 130, 246, 0.2) 40%, transparent 75%);
+    transform: rotate(20deg);
+    filter: blur(70px);
+}
+
+/* 💧 Background liquid.jpg แบบเบลอละมุน */
+.bg-liquid-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -4;
+    overflow: hidden;
+}
+.bg-liquid-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(12px) brightness(0.85) contrast(1.1);
+    transform: scale(1.1);
+}
+.bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(244, 246, 248, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: -1;
+}
+[data-theme="dark"] .bg-overlay {
+    background: rgba(17, 17, 17, 0.78);
+}
+
+/* 🌐 Navigation Bar */
+nav { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 16px 24px; 
+    background-color: var(--bg-card); 
+    border-bottom: 1px solid var(--border-color); 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    z-index: 1000; 
+    border-radius: 0 !important;
+}
+.logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: var(--accent-color); border-radius: 0; }
+
+.nav-links { display: flex; align-items: center; border-radius: 0; }
+.nav-links a { color: var(--text-main); text-decoration: none; margin: 0 15px; font-size: 14px; font-weight: 600; border-radius: 0; }
+.nav-actions { display: flex; align-items: center; gap: 8px; border-radius: 0; }
+
+button { background-color: var(--accent-color); color: var(--accent-text); border: 1px solid var(--border-color); padding: 10px 20px; cursor: pointer; font-weight: 600; font-size: 14px; border-radius: 12px !important; display: flex; align-items: center; justify-content: center; gap: 8px; }
+button:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.btn-secondary { background-color: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background-color: var(--border-color); }
+.btn-auth { padding: 8px 14px; font-size: 13px; }
+
+.hamburger-btn { display: none; background: transparent; border: 1px solid var(--border-color); padding: 8px; cursor: pointer; color: var(--text-main); }
+.mobile-dropdown { display: none; position: absolute; top: 70px; right: 20px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; box-shadow: var(--card-shadow); z-index: 2000; flex-direction: column; gap: 12px; width: 220px; }
+.mobile-dropdown a, .mobile-dropdown button { color: var(--text-main); background: transparent; border: none; text-align: left; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer; width: 100%; }
+.mobile-dropdown a:hover, .mobile-dropdown button:hover { background-color: var(--bg-main); }
+
+/* 🚀 Hero Section */
+.hero {
+    padding: 150px 20px 60px 20px;
+    text-align: center;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 30px !important;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    box-shadow: var(--card-shadow);
+}
+.hero h1 {
+    font-size: clamp(32px, 4vw, 56px);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+    color: var(--text-main);
+}
+.hero p {
+    font-size: clamp(15px, 1.8vw, 17px);
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 36px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.hero-btns {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 50px;
+}
+
+/* 🌟 ระบบจัดเรียงการ์ดแบบ Flexbox จัดกลางอัตโนมัติ (บน 3 / ล่าง 2 ตรงกลาง) */
+.features-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px 100px 20px;
+}
+.section-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 40px;
+}
+
+.features-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+}
+
+.feature-banner-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    border-radius: 20px !important;
+    display: flex;
+    flex-direction: column;
+    width: calc(33.333% - 16px);
+    min-width: 300px;
+}
+
+.banner-image-box {
+    width: 100%;
+    height: 180px;
+    background-color: var(--bg-main);
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0 !important;
+}
+.banner-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.banner-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+.banner-tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.banner-content h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+.banner-content p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Footer */
+footer {
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    background-color: var(--bg-card);
+}
+
+@media (max-width: 900px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .feature-banner-card { width: calc(50% - 12px); }
+}
+
+@media (max-width: 768px) {
+    .nav-links { display: none !important; }
+    .hamburger-btn { display: flex !important; }
+    #dark-mode-toggle { display: none !important; }
+    .features-grid { display: flex; flex-direction: column; align-items: center; }
+    .feature-banner-card { width: 100%; max-width: 400px; }
+    nav { padding: 12px 16px; }
+    .hero { padding: 120px 16px 40px 16px; }
+    .hero-btns { flex-direction: column; }
+}
+@media (min-width: 769px) {
+    #mobile-dark-mode-btn { display: none !important; }
+}
+
+/* 🌟 เอฟเฟกต์ปุ่มขยับเมื่อเอาเมาส์ไปชี้ */
+button, .btn-auth, .custom-file-upload {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
+}
+
+button:hover, .btn-auth:hover, .custom-file-upload:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+button:active, .btn-auth:active, .custom-file-upload:active {
+    transform: translateY(-1px) scale(1.00) !important;
+}
+    </style>
+</head>
+<body>
+
+    <div class="light-ray-container">
+        <div class="light-ray-1"></div>
+        <div class="light-ray-2"></div>
+    </div>
+
+    <div class="bg-liquid-container">
+        <img src="liquid.jpg" alt="Liquid Background">
+    </div>
+    <div class="bg-overlay"></div>
+
+   <nav>
+        <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
+        
+        <div class="nav-links">
+            <a href="index.html">BodySlim ?</a>
+            <a href="home.html">หน้าหลัก</a>
+            <a href="workout.html">ตารางออกกำลังกาย</a>
+            <a href="profile.html">โปรไฟล์</a>
+        </div>
+
+        <div class="nav-actions">
+            <button id="dark-mode-toggle" class="btn-auth btn-secondary"></button>
+            <div id="auth-buttons" style="display: flex; gap: 8px; border-radius: 0;">
+                <button class="btn-auth btn-secondary" onclick="window.location.href='login.html'">เข้าสู่ระบบ</button>
+                <button class="btn-auth" onclick="window.location.href='register.html'">สมัครบัญชี</button>
+            </div>
+            <button id="hamburger-btn" class="hamburger-btn btn-auth"><i data-lucide="menu" style="width: 18px; height: 18px;"></i></button>
+        </div>
+
+        <div id="mobile-dropdown" class="mobile-dropdown">
+            <a href="index.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> BodySlim ?</a>
+            <a href="home.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> หน้าหลัก</a>
+            <a href="workout.html"><i data-lucide="activity" style="width: 16px; height: 16px;"></i> ตารางออกกำลังกาย</a>
+            <a href="profile.html"><i data-lucide="user" style="width: 16px; height: 16px;"></i> โปรไฟล์</a>
+            <button id="mobile-dark-mode-btn"><i data-lucide="moon" style="width: 16px; height: 16px;"></i> โหมดสี</button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-badge">
+            <i data-lucide="sparkles" style="width: 14px; height: 14px; color: #ff6b6b;"></i> By Tharatorn Sutunont
+        </div>
+        <h1>เว็ปไซต์ดูแลสุขภาพ<br>ที่ออกแบบมาเพื่อ Everyone</h1>
+        <p>ตัวช่วยคำนวณพลังงาน วางแผนโภชนาการ และจัดตารางออกกำลังกายเฉพาะบุคคลแบบเรียลไทม์ ใช้งานง่ายและสะดวก</p>
+        <div class="hero-btns" id="hero-action-buttons"></div>
+    </section>
+
+    <div class="features-container">
+        <h2 class="section-title">ฟังก์ชั่นทั้งหมดในระบบ</h2>
+        <div class="features-grid">
+            <div class="feature-banner-card">
+                <div class="banner-image-box">
+                    <img src="cal.jpg" alt="Calorie Calculation" onerror="this.style.display='none'">
+                </div>
+                <div class="banner-content">
+                    <span class="banner-tag">01</span>
+                    <h3>คำนวณแคลอรี & เป้าหมาย</h3>
+                    <p>ระบบคำนวณพลังงาน BMR และ TDEE จากน้ำหนัก ส่วนสูง และเป้าหมายของคุณ เพื่อกำหนดปริมาณแคลอรีและโปรตีนที่เหมาะสมในแต่ละวัน</p>
+                </div>
+            </div>
+
+            <div class="feature-banner-card">
+                <div class="banner-image-box">
+                    <img src="food.jpg" alt="Food Recommendation" onerror="this.style.display='none'">
+                </div>
+                <div class="banner-content">
+                    <span class="banner-tag">02</span>
+                    <h3>AI แนะนำอาหารตามสั่ง</h3>
+                    <p>พิมพ์สถานที่หรือประเภทอาหารที่คุณต้องการ AI จะช่วยวิเคราะห์และแนะนำเมนูพร้อมคำนวณสารอาหารหลักให้ทันทีอย่างแม่นยำ</p>
+                </div>
+            </div>
+
+            <div class="feature-banner-card">
+                <div class="banner-image-box">
+                    <img src="ex.jpg" alt="Workout Routine" onerror="this.style.display='none'">
+                </div>
+                <div class="banner-content">
+                    <span class="banner-tag">03</span>
+                    <h3>จัดตารางออกกำลังกาย</h3>
+                    <p>สร้างตารางออกกําลังกายเฉพาะบุคคลตามระดับความพร้อมและข้อจำกัดของคุณ พร้อมบันทึกตารางโปรดไว้ฝึกซ้ำได้ทุกวัน</p>
+                </div>
+            </div>
+
+            <div class="feature-banner-card">
+                <div class="banner-image-box" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e1e1e, #2d2d2d);">
+                    <i data-lucide="flame" style="width: 56px; height: 56px; color: #ff6b6b;"></i>
+                </div>
+                <div class="banner-content">
+                    <span class="banner-tag">04</span>
+                    <h3>ระบบสตรีท (Streak) ต่อเนื่อง</h3>
+                    <p>ระบบเช็คอินนับวันต่อเนื่องจริงตามปฏิทินที่ฮิตกันในช่วงนี้ ช่วยสร้างวินัยในการดูแลสุขภาพและพิชิตเป้าหมายของคุณอย่างสม่ำเสมอ</p>
+                </div>
+            </div>
+
+            <div class="feature-banner-card">
+                <div class="banner-image-box">
+                    <img src="gemini.png" alt="Gemini AI" onerror="this.style.display='none'">
+                </div>
+                <div class="banner-content">
+                    <span class="banner-tag">05</span>
+                    <h3>ขับเคลื่อนด้วย Gemini </h3>
+                    <p>โดยใช้เทคโนโลยีปัญญาประดิษฐ์อัจฉริยะจาก Gemini ในการสื่อสาร วิเคราะห์โภชนาการ และให้คำตอบเชิงลึกแก่ผู้ใช้อย่างเป็นธรรมชาติ</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 BodySlim. แพลตฟอร์มช่วยดูแลสุขภาพและโภชนาการของคุณ.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileDropdown = document.getElementById('mobile-dropdown');
+            if (hamburgerBtn && mobileDropdown) {
+                hamburgerBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    mobileDropdown.style.display = mobileDropdown.style.display === 'flex' ? 'none' : 'flex';
+                });
+                document.addEventListener('click', () => {
+                    mobileDropdown.style.display = 'none';
+                });
+            }
+
+            const toggleButton = document.querySelector('#dark-mode-toggle');
+            const mobileToggleBtn = document.querySelector('#mobile-dark-mode-btn');
+            const currentTheme = localStorage.getItem('theme') || 'light';
+
+            function updateThemeUI(theme) {
+                if (theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    if (toggleButton) toggleButton.innerHTML = '<i data-lucide="sun" style="width: 16px; height: 16px;"></i>';
+                    if (mobileToggleBtn) mobileToggleBtn.innerHTML = '<i data-lucide="sun" style="width: 16px; height: 16px;"></i> โหมดสว่าง';
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                    if (toggleButton) toggleButton.innerHTML = '<i data-lucide="moon" style="width: 16px; height: 16px;"></i>';
+                    if (mobileToggleBtn) mobileToggleBtn.innerHTML = '<i data-lucide="moon" style="width: 16px; height: 16px;"></i> โหมดมืด';
+                }
+                lucide.createIcons();
+            }
+
+            updateThemeUI(currentTheme);
+
+            if (toggleButton) {
+                toggleButton.addEventListener('click', () => {
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    updateThemeUI(theme === 'dark' ? 'light' : 'dark');
+                });
+            }
+
+            if (mobileToggleBtn) {
+                mobileToggleBtn.addEventListener('click', () => {
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    updateThemeUI(theme === 'dark' ? 'light' : 'dark');
+                });
+            }
+
+            function renderHomeNav() {
+                const savedData = localStorage.getItem('user_session');
+                const authButtonsDiv = document.getElementById('auth-buttons');
+                const heroActionButtons = document.getElementById('hero-action-buttons');
+
+                // 🌟 ระบบคำนวณ Streak
+                const todayObj = new Date();
+                const todayStr = todayObj.toISOString().split('T')[0]; 
+                let lastActiveDate = localStorage.getItem('user_last_active_date');
+                let streak = parseInt(localStorage.getItem('user_real_streak')) || 0;
+
+                if (!lastActiveDate) {
+                    streak = 1;
+                    localStorage.setItem('user_real_streak', streak);
+                    localStorage.setItem('user_last_active_date', todayStr);
+                } else {
+                    const lastDateObj = new Date(lastActiveDate);
+                    const currDateObj = new Date(todayStr);
+                    const diffTime = currDateObj - lastDateObj;
+                    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffDays === 1) {
+                        streak += 1;
+                        localStorage.setItem('user_real_streak', streak);
+                        localStorage.setItem('user_last_active_date', todayStr);
+                    } else if (diffDays > 1) {
+                        streak = 1;
+                        localStorage.setItem('user_real_streak', streak);
+                        localStorage.setItem('user_last_active_date', todayStr);
+                    }
+                }
+
+                if (!savedData || !JSON.parse(savedData).isLoggedIn) {
+                    if (authButtonsDiv) {
+                        authButtonsDiv.innerHTML = `
+                            <button class="btn-auth btn-secondary" onclick="transitionToPage('login.html')">เข้าสู่ระบบ</button>
+                            <button class="btn-auth" onclick="transitionToPage('register.html')">สมัครบัญชี</button>
+                        `;
+                    }
+                    if (heroActionButtons) {
+                        heroActionButtons.innerHTML = `
+                            <button onclick="transitionToPage('index.html')" style="padding: 12px 24px; font-size: 14px;">
+                                <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i> ไปยังหน้าแดชบอร์ด
+                            </button>
+                            <button class="btn-secondary" onclick="transitionToPage('register.html')" style="padding: 12px 24px; font-size: 14px;">
+                                สมัครสมาชิกฟรี
+                            </button>
+                        `;
+                    }
+                } else {
+                    const user = JSON.parse(savedData);
+                    const avatarDisplay = user.avatar ? `<img src="${user.avatar}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;">` : `<i data-lucide="circle-user" style="width: 16px; height: 16px;"></i>`;
+
+                    if (authButtonsDiv) {
+                        authButtonsDiv.innerHTML = `
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: 4px; background: var(--bg-main); padding: 6px 10px; border-radius: 12px; border: 1px solid var(--border-color); font-size: 13px; font-weight: 700; color: #ff6b6b;">
+                                    <i data-lucide="flame" style="width: 15px; height: 15px;"></i> ${streak}
+                                </div>
+                                <a onclick="transitionToPage('profile.html')" translate="no" style="font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; background: var(--bg-main); padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); color: var(--text-main); text-decoration: none; cursor: pointer;">
+                                     ${avatarDisplay} ${user.username}
+                                </a>
+                            </div>
+                            <button class="btn-auth btn-secondary" id="logout-btn" style="padding: 8px 12px; font-size: 13px; display: flex; align-items: center;" title="ออกจากระบบ">
+                                <i data-lucide="log-out" style="width: 14px; height: 14px;"></i>
+                            </button>
+                        `;
+                        document.getElementById('logout-btn').addEventListener('click', () => {
+                            user.isLoggedIn = false;
+                            localStorage.setItem('user_session', JSON.stringify(user));
+                            window.location.reload();
+                        });
+                    }
+
+                    if (heroActionButtons) {
+                        heroActionButtons.innerHTML = `
+                            <button onclick="transitionToPage('index.html')" style="padding: 12px 24px; font-size: 14px;">
+                                <i data-lucide="layout-dashboard" style="width: 16px; height: 16px;"></i> ดูหน้าหลัก
+                            </button>
+                        `;
+                    }
+                }
+                lucide.createIcons();
+            }
+
+            renderHomeNav();
+            lucide.createIcons();
+        });
+
+        // 🌟 ฟังก์ชันคุมจังหวะการ Fade ออกอย่างนุ่มนวล ไม่เร็วเกินไป (450ms)
+        function transitionToPage(url) {
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = url;
+            }, 450);
+        }
+
+        // ดักจับลิงก์เมนูปรกติทั้งหมดในหน้าให้ใช้ฟังก์ชัน Fade นุ่มนวลเดียวกัน
+        document.addEventListener('DOMContentLoaded', () => {
+            const internalLinks = document.querySelectorAll('a[href]');
+            internalLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
+                        e.preventDefault();
+                        transitionToPage(href);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

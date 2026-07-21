@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ - BodySlim</title>
+    <!-- 📦 โหลด Lucide Icons ผ่าน CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 16px; 
+            font-family: 'Inter', sans-serif; 
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        :root {
+            --bg-main: #F4F6F8;       
+            --bg-card: #FFFFFF;       
+            --text-main: #1A1D20;     
+            --text-muted: #6C757D;    
+            --border-color: #E9ECEF;  
+            --accent-color: #1A1D20;  
+            --accent-text: #FFFFFF;   
+            --input-bg: #F4F6F8;
+            --card-shadow: 0 8px 24px rgba(0,0,0,0.04);
+        }
+
+        [data-theme="dark"] {
+            --bg-main: #111111;       
+            --bg-card: #1E1E1E;       
+            --text-main: #FAFAFA;     
+            --text-muted: #A0A0A0;    
+            --border-color: #2D2D2D;  
+            --accent-color: #FAFAFA;  
+            --accent-text: #111111;   
+            --input-bg: #111111;
+            --card-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        html, body { border-radius: 0; }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            border-radius: 0 !important; 
+        }
+        
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--accent-color);
+            border-radius: 0;
+        }
+
+        .nav-links { display: flex; align-items: center; border-radius: 0; }
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 0;
+        }
+
+        .nav-links a.active {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 4px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 0;
+        }
+
+        /* Hamburger Menu for Mobile */
+        .hamburger-btn { display: none; background: transparent; border: 1px solid var(--border-color); padding: 8px; cursor: pointer; color: var(--text-main); }
+        .mobile-dropdown { display: none; position: absolute; top: 70px; right: 20px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; box-shadow: var(--card-shadow); z-index: 2000; flex-direction: column; gap: 12px; width: 220px; }
+        .mobile-dropdown a, .mobile-dropdown button { color: var(--text-main); background: transparent; border: none; text-align: left; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer; width: 100%; }
+        .mobile-dropdown a:hover, .mobile-dropdown button:hover { background-color: var(--bg-main); }
+
+        .btn-auth {
+            background-color: var(--accent-color);
+            color: var(--accent-text);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 12px !important; 
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-main);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none !important; }
+            .hamburger-btn { display: flex !important; }
+            #dark-mode-toggle { display: none !important; }
+            nav { padding: 12px 16px; }
+        }
+        @media (min-width: 769px) {
+            #mobile-dark-mode-btn { display: none !important; }
+        }
+
+        .page-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 20px 40px 20px;
+            border-radius: 0 !important;
+        }
+        
+        .auth-card {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--card-shadow);
+            border-radius: 24px !important; 
+        }
+        
+        h2 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        
+        p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            border-radius: 0;
+        }
+        
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+            outline: none;
+            border-radius: 12px !important; 
+        }
+        
+        input:focus {
+            border-color: var(--accent-color);
+            background-color: var(--bg-card);
+        }
+        
+        .btn-submit {
+            width: 100%;
+            background-color: var(--accent-color);
+            color: var(--accent-text);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 15px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 12px !important; 
+        }
+        
+        .btn-submit:hover { 
+            opacity: 0.9; 
+            transform: translateY(-1px);
+        }
+        
+        .switch-auth {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border-radius: 0;
+        }
+        
+        .switch-auth a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .switch-auth a:hover {
+            border-bottom: 1px solid var(--text-main);
+        }
+
+        /* 🌟 เอฟเฟกต์ปุ่มขยับเมื่อเอาเมาส์ไปชี้ */
+button, .btn-auth, .custom-file-upload {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
+}
+
+button:hover, .btn-auth:hover, .custom-file-upload:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+button:active, .btn-auth:active, .custom-file-upload:active {
+    transform: translateY(-1px) scale(1.00) !important;
+}
+
+/* 🌟 ตั้งค่าเริ่มต้นให้หน้าเว็บพร้อมทำ Fade Transition */
+body {
+    opacity: 0;
+    animation: fadeInPage 0.4s ease forwards;
+}
+
+@keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* คลาสสำหรับจางหายตอนกดเปลี่ยนหน้า */
+body.fade-out {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+/* 🌟 เปิดใช้งานระบบเปลี่ยนหน้าแบบสมูทไร้รอยต่อ (View Transitions API) */
+@view-transition {
+    navigation: auto;
+}
+
+    </style>
+</head>
+<body>
+
+       <nav>
+        <!-- 1. เปลี่ยนโลโก้ BodySlim ให้ลิงก์ไปที่ home.html -->
+        <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
+        
+        <!-- 2. เมนูหลัก (Desktop) -->
+        <div class="nav-links">
+            <a href="index.html">BodySlim ?</a>
+            <a href="home.html">หน้าหลัก</a>
+            <a href="workout.html">ตารางออกกำลังกาย</a>
+            <a href="profile.html">โปรไฟล์</a>
+        </div>
+
+        <div class="nav-actions">
+            <button id="dark-mode-toggle" class="btn-auth btn-secondary"></button>
+            
+            <!-- โซนปุ่ม Login/Register (สคริปต์ JS จะดึงข้อมูลมาแสดงทับในส่วนนี้) -->
+            <div id="auth-buttons" style="display: flex; gap: 8px; border-radius: 0;">
+                <button class="btn-auth btn-secondary" onclick="window.location.href='login.html'">เข้าสู่ระบบ</button>
+                <button class="btn-auth" onclick="window.location.href='register.html'">สมัครบัญชี</button>
+            </div>
+            
+            <button id="hamburger-btn" class="hamburger-btn btn-auth"><i data-lucide="menu" style="width: 18px; height: 18px;"></i></button>
+        </div>
+
+        <!-- 3. เมนูมือถือ (Mobile Dropdown) -->
+        <div id="mobile-dropdown" class="mobile-dropdown">
+            <a href="index.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> BodySlim ?</a>
+            <a href="home.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> หน้าหลัก</a>
+            <a href="workout.html"><i data-lucide="activity" style="width: 16px; height: 16px;"></i> ตารางออกกำลังกาย</a>
+            <a href="profile.html"><i data-lucide="user" style="width: 16px; height: 16px;"></i> โปรไฟล์</a>
+            <button id="mobile-dark-mode-btn"><i data-lucide="moon" style="width: 16px; height: 16px;"></i> โหมดสี</button>
+        </div>
+    </nav>
+
+
+    <div class="page-container">
+        <div class="auth-card">
+            <h2>ยินดีต้อนรับกลับมา</h2>
+            <p>เข้าสู่ระบบเพื่อใช้งานต่อเลย</p>
+            
+            <form>
+                <div class="form-group">
+                    <label for="username">ชื่อผู้ใช้ หรือ อีเมล</label>
+                    <input type="text" id="username" placeholder="example@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">รหัสผ่าน</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-submit">เข้าสู่ระบบ</button>
+            </form>
+
+            <div class="switch-auth">
+                ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิกที่นี่</a>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileDropdown = document.getElementById('mobile-dropdown');
+    if (hamburgerBtn && mobileDropdown) {
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileDropdown.style.display = mobileDropdown.style.display === 'flex' ? 'none' : 'flex';
+        });
+        document.addEventListener('click', () => {
+            mobileDropdown.style.display = 'none';
+        });
+    }
+
+    const toggleButton = document.querySelector('#dark-mode-toggle');
+    const mobileToggleBtn = document.querySelector('#mobile-dark-mode-btn');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+
+    function updateThemeUI(theme) {
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            if (toggleButton) toggleButton.innerHTML = '<i data-lucide="sun" style="width: 16px; height: 16px;"></i>';
+            if (mobileToggleBtn) mobileToggleBtn.innerHTML = '<i data-lucide="sun" style="width: 16px; height: 16px;"></i> โหมดสว่าง';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            if (toggleButton) toggleButton.innerHTML = '<i data-lucide="moon" style="width: 16px; height: 16px;"></i>';
+            if (mobileToggleBtn) mobileToggleBtn.innerHTML = '<i data-lucide="moon" style="width: 16px; height: 16px;"></i> โหมดมืด';
+        }
+        lucide.createIcons();
+    }
+
+    updateThemeUI(currentTheme);
+
+    if (toggleButton) {
+        toggleButton.addEventListener('click', () => {
+            const theme = document.documentElement.getAttribute('data-theme');
+            updateThemeUI(theme === 'dark' ? 'light' : 'dark');
+        });
+    }
+
+    if (mobileToggleBtn) {
+        mobileToggleBtn.addEventListener('click', () => {
+            const theme = document.documentElement.getAttribute('data-theme');
+            updateThemeUI(theme === 'dark' ? 'light' : 'dark');
+        });
+    }
+
+    document.querySelector('form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        
+        const sessionData = localStorage.getItem('user_session');
+        
+        if (sessionData) {
+            const user = JSON.parse(sessionData);
+            user.isLoggedIn = true;
+            localStorage.setItem('user_session', JSON.stringify(user)); 
+            
+            alert('เข้าสู่ระบบสำเร็จ!');
+            window.location.href = 'index.html'; 
+        } else {
+            alert('ไม่พบข้อมูลบัญชี กรุณาสมัครสมาชิกก่อนครับ');
+            window.location.href = 'register.html';
+        }
+    });
+
+    lucide.createIcons();
+    // 🌟 เอฟเฟกต์ Fade ตอนกดเปลี่ยนหน้า
+document.addEventListener('DOMContentLoaded', () => {
+    const internalLinks = document.querySelectorAll('a[href]');
+    
+    internalLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            // ตรวจสอบว่าเป็นลิงก์ภายในเว็บเดียวกันหรือไม่ และไม่ใช่ลิงก์ # หรือเปิด tab ใหม่
+            if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
+                e.preventDefault(); // หยุดการเปลี่ยนหน้าชั่วคราวเพื่อให้แอนิเมชันเล่นก่อน
+                document.body.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 300); // รอให้แอนิเมชันเล่น 0.3 วินาทีแล้วค่อยเปลี่ยนหน้า
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
