@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เข้าสู่ระบบ - BodySlim</title>
+    <title>เข้าสู่ระบบ - AuraSync</title>
     <!-- 📦 โหลด Lucide Icons ผ่าน CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -314,7 +314,7 @@
     </div>
 
     <nav>
-        <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
+        <a href="index.html" class="logo" style="text-decoration: none;">AuraSync</a>
         <div class="nav-links">
             <a href="home.html">หน้าหลัก</a>
             <a href="workout.html">ตารางออกกำลังกาย</a>
@@ -352,7 +352,7 @@
                 </div>
                 
                 <div style="text-align: right;">
-                    <a id="forgot-password-link" class="forgot-password-link">ลืมรหัสผ่าน?</a>
+                    <a href="recovery.html" id="forgot-password-link" class="forgot-password-link">ลืมรหัสผ่าน?</a>
                 </div>
 
                 <button type="submit" class="btn-submit">เข้าสู่ระบบ</button>
@@ -366,7 +366,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDB1HwSk12QUqbeWPntX3Rkhh5zBIgSgWs",
@@ -454,29 +454,6 @@
         }, { once: true });
 
         lucide.createIcons();
-    }
-
-    const forgotPasswordLink = document.getElementById('forgot-password-link');
-    if (forgotPasswordLink) {
-        forgotPasswordLink.addEventListener('click', async () => {
-            const emailInput = document.getElementById('email').value.trim();
-            if (!emailInput) {
-                showAlertModal('กรุณากรอกอีเมล', 'โปรดพิมพ์อีเมลของคุณในช่องอีเมลก่อนกดขอรีเซ็ตรหัสผ่านครับ 📧', 'error');
-                return;
-            }
-
-            try {
-                await sendPasswordResetEmail(auth, emailInput);
-                showAlertModal('ส่งลิงก์สำเร็จ!', 'ระบบได้ส่งอีเมลสำหรับเปลี่ยนรหัสผ่านไปที่ ' + emailInput + ' แล้ว กรุณาตรวจสอบกล่องข้อความครับ ✉️', 'success');
-            } catch (error) {
-                console.error("Reset Password Error:", error);
-                if (error.code === 'auth/user-not-found') {
-                    showAlertModal('ไม่พบอีเมล', 'ไม่พบบัญชีผู้ใช้นี้ในระบบ กรุณาตรวจสอบความถูกต้องครับ ❌', 'error');
-                } else {
-                    showAlertModal('เกิดข้อผิดพลาด', error.message, 'error');
-                }
-            }
-        });
     }
 
     document.querySelector('form').addEventListener('submit', async (event) => {
