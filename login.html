@@ -121,6 +121,7 @@
             .hamburger-btn { display: flex !important; }
             #dark-mode-toggle { display: none !important; }
             nav { padding: 12px 16px; }
+            .auth-card { padding: 24px 20px !important; }
         }
         @media (min-width: 769px) {
             #mobile-dark-mode-btn { display: none !important; }
@@ -131,7 +132,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 100px 20px 40px 20px;
+            padding: 90px 16px 30px 16px;
             border-radius: 0 !important;
         }
         
@@ -139,7 +140,7 @@
             background-color: var(--bg-card);
             color: var(--text-main);
             border: 1px solid var(--border-color);
-            padding: 40px;
+            padding: 36px 32px;
             width: 100%;
             max-width: 400px;
             box-shadow: var(--card-shadow);
@@ -149,25 +150,25 @@
         h2 {
             font-size: 22px;
             font-weight: 800;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         
         p {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-muted);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             border-radius: 0;
         }
         
         label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         
         input {
@@ -185,6 +186,20 @@
             border-color: var(--accent-color);
             background-color: var(--bg-card);
         }
+
+        .forgot-password-link {
+            display: inline-block;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-top: 4px;
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+        .forgot-password-link:hover {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
         
         .btn-submit {
             width: 100%;
@@ -193,8 +208,7 @@
             border: 1px solid var(--border-color);
             padding: 12px 24px;
             font-weight: 600;
-            font-size: 15px;
-            margin-top: 10px;
+            font-size: 14px;
             cursor: pointer;
             border-radius: 12px !important; 
         }
@@ -206,7 +220,7 @@
         
         .switch-auth {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 18px;
             font-size: 13px;
             color: var(--text-muted);
             border-radius: 0;
@@ -302,7 +316,6 @@
     <nav>
         <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
         <div class="nav-links">
-            <a href="index.html">BodySlim ?</a>
             <a href="home.html">หน้าหลัก</a>
             <a href="workout.html">ตารางออกกำลังกาย</a>
             <a href="profile.html">โปรไฟล์</a>
@@ -316,7 +329,6 @@
             <button id="hamburger-btn" class="hamburger-btn btn-auth"><i data-lucide="menu" style="width: 18px; height: 18px;"></i></button>
         </div>
         <div id="mobile-dropdown" class="mobile-dropdown">
-            <a href="index.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> BodySlim ?</a>
             <a href="home.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> หน้าหลัก</a>
             <a href="workout.html"><i data-lucide="activity" style="width: 16px; height: 16px;"></i> ตารางออกกำลังกาย</a>
             <a href="profile.html"><i data-lucide="user" style="width: 16px; height: 16px;"></i> โปรไฟล์</a>
@@ -334,10 +346,15 @@
                     <label for="email">อีเมล (Gmail)</label>
                     <input type="email" id="email" placeholder="example@gmail.com" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 4px;">
                     <label for="password">รหัสผ่าน</label>
                     <input type="password" id="password" placeholder="••••••••" required>
                 </div>
+                
+                <div style="text-align: right;">
+                    <a id="forgot-password-link" class="forgot-password-link">ลืมรหัสผ่าน?</a>
+                </div>
+
                 <button type="submit" class="btn-submit">เข้าสู่ระบบ</button>
             </form>
 
@@ -348,11 +365,9 @@
     </div>
 
 <script type="module">
-    // นำเข้า Firebase จาก CDN
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // ตั้งค่าโปรเจกต์
     const firebaseConfig = {
       apiKey: "AIzaSyDB1HwSk12QUqbeWPntX3Rkhh5zBIgSgWs",
       authDomain: "bodyslims-9b3ba.firebaseapp.com",
@@ -363,7 +378,6 @@
       measurementId: "G-NDQZJJVEVQ"
     };
 
-    // เปิดใช้งาน Firebase และระบบสมาชิก
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
@@ -442,15 +456,36 @@
         lucide.createIcons();
     }
 
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', async () => {
+            const emailInput = document.getElementById('email').value.trim();
+            if (!emailInput) {
+                showAlertModal('กรุณากรอกอีเมล', 'โปรดพิมพ์อีเมลของคุณในช่องอีเมลก่อนกดขอรีเซ็ตรหัสผ่านครับ 📧', 'error');
+                return;
+            }
+
+            try {
+                await sendPasswordResetEmail(auth, emailInput);
+                showAlertModal('ส่งลิงก์สำเร็จ!', 'ระบบได้ส่งอีเมลสำหรับเปลี่ยนรหัสผ่านไปที่ ' + emailInput + ' แล้ว กรุณาตรวจสอบกล่องข้อความครับ ✉️', 'success');
+            } catch (error) {
+                console.error("Reset Password Error:", error);
+                if (error.code === 'auth/user-not-found') {
+                    showAlertModal('ไม่พบอีเมล', 'ไม่พบบัญชีผู้ใช้นี้ในระบบ กรุณาตรวจสอบความถูกต้องครับ ❌', 'error');
+                } else {
+                    showAlertModal('เกิดข้อผิดพลาด', error.message, 'error');
+                }
+            }
+        });
+    }
+
     document.querySelector('form').addEventListener('submit', async (event) => {
         event.preventDefault();
         
-        // รับค่าจากช่อง "อีเมล" แล้ว
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         
         try {
-            // โค้ดสำหรับเข้าสู่ระบบ
             await signInWithEmailAndPassword(auth, email, password);
 
             let sessionData = localStorage.getItem('user_session');

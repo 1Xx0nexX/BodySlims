@@ -52,18 +52,55 @@ body {
     animation: fadeInPage 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* 🌟 แอนิเมชันเปิดหน้า (Fade & Slide นุ่มนวล ไม่เร็วเกินไป) */
+/* 🌟 แอนิเมชันเปิดหน้า */
 @keyframes fadeInPage {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* คลาสสำหรับจางหายตอนกดเปลี่ยนหน้าแบบสมูทละมุน */
 body.fade-out {
     opacity: 0 !important;
     transform: translateY(-8px) !important;
     transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), transform 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
+
+/* 🌟 เอฟเฟกต์หมุนสำหรับ Loading */
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.spin-icon { animation: spin 1s linear infinite; }
+
+/* 🌟 Custom Smooth Modal Styles จากหน้า Workout */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; opacity: 0; visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal-box {
+    background: var(--bg-card); border: 1px solid var(--border-color);
+    padding: 30px; width: 90%; max-width: 380px; text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    transform: scale(0.9) translateY(10px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 24px !important;
+}
+.modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+.modal-icon-wrapper {
+    width: 50px; height: 50px; background: rgba(220, 53, 69, 0.1);
+    color: #dc3545; border-radius: 50% !important; display: flex;
+    align-items: center; justify-content: center; margin: 0 auto 16px auto;
+}
+.modal-icon-wrapper.success { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.modal-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+.modal-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-actions button { flex: 1; padding: 10px; font-size: 13px; border-radius: 12px !important; }
+.btn-danger { background-color: #dc3545 !important; color: #ffffff !important; border-color: #dc3545 !important; }
+.btn-danger:hover { opacity: 0.85; }
+.btn-success { background-color: #10b981 !important; color: #ffffff !important; border-color: #10b981 !important; }
+.btn-success:hover { opacity: 0.85; }
 
 nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); position: relative; }
 .logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: var(--accent-color); border-radius: 0; cursor: pointer; }
@@ -150,7 +187,6 @@ input:focus, select:focus { border-color: var(--accent-color); background-color:
     background-color: var(--border-color);
 }
 
-/* 🌟 เอฟเฟกต์ปุ่มขยับเมื่อเอาเมาส์ไปชี้ */
 button, .btn-auth, .custom-file-upload {
     transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
 }
@@ -165,11 +201,25 @@ button:active, .btn-auth:active, .custom-file-upload:active {
 </head>
 <body>
 
-      <nav>
+    <!-- 🌟 Custom Smooth Modal Popup (UI เด้งเดียวกับหน้า Workout) -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div id="modal-icon-container" class="modal-icon-wrapper">
+                <i data-lucide="trash-2" style="width: 24px; height: 24px;"></i>
+            </div>
+            <div class="modal-title" id="modal-title-text">ยืนยันการทำรายการ</div>
+            <div class="modal-desc" id="modal-desc-text">คุณต้องการดำเนินการต่อหรือไม่?</div>
+            <div class="modal-actions" id="modal-actions-container">
+                <button id="modal-cancel-btn" class="btn-secondary">ยกเลิก</button>
+                <button id="modal-confirm-btn" class="btn-danger">ยืนยัน</button>
+            </div>
+        </div>
+    </div>
+
+    <nav>
         <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
         
         <div class="nav-links">
-            <a href="index.html">BodySlim ?</a>
             <a href="home.html">หน้าหลัก</a>
             <a href="workout.html">ตารางออกกำลังกาย</a>
             <a href="profile.html" class="active">โปรไฟล์</a>
@@ -178,14 +228,13 @@ button:active, .btn-auth:active, .custom-file-upload:active {
         <div class="nav-actions">
             <button id="dark-mode-toggle" class="btn-auth btn-secondary"></button>
             <div id="auth-buttons" style="display: flex; gap: 8px; border-radius: 0;">
-                <button class="btn-auth btn-secondary" onclick="transitionToPage('login.html')">เข้าสู่ระบบ</button>
-                <button class="btn-auth" onclick="transitionToPage('register.html')">สมัครบัญชี</button>
+                <button class="btn-auth btn-secondary" onclick="window.transitionToPage('login.html')">เข้าสู่ระบบ</button>
+                <button class="btn-auth" onclick="window.transitionToPage('register.html')">สมัครบัญชี</button>
             </div>
             <button id="hamburger-btn" class="hamburger-btn btn-auth"><i data-lucide="menu" style="width: 18px; height: 18px;"></i></button>
         </div>
 
         <div id="mobile-dropdown" class="mobile-dropdown">
-            <a href="index.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> BodySlim ?</a>
             <a href="home.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> หน้าหลัก</a>
             <a href="workout.html"><i data-lucide="activity" style="width: 16px; height: 16px;"></i> ตารางออกกำลังกาย</a>
             <a href="profile.html"><i data-lucide="user" style="width: 16px; height: 16px;"></i> โปรไฟล์</a>
@@ -249,7 +298,8 @@ button:active, .btn-auth:active, .custom-file-upload:active {
                 <div>
                     <label style="font-size: 12px; font-weight: 600; display:block; margin-bottom:4px;">เป้าหมายสุขภาพ</label>
                     <select id="main-goal">
-                        <option value="lose">ควบคุมน้ำหนัก & งบประหยัด</option>
+                        <!-- 🌟 เปลี่ยนจากควบคุมน้ำหนัก เป็น ลดน้ำหนัก & ไขมัน -->
+                        <option value="lose">ลดน้ำหนัก & ไขมัน</option>
                         <option value="maintain">รักษารูปร่างและสุขภาพ</option>
                         <option value="gain">เพิ่มกล้ามเนื้อ</option>
                     </select>
@@ -278,14 +328,100 @@ button:active, .btn-auth:active, .custom-file-upload:active {
         </div>
     </div>
 
-    <script>
+    <!-- 🌟 ส่วนประมวลผลการทำงาน และ Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.transitionToPage = function(url) {
+            document.body.classList.add('fade-out');
+            setTimeout(() => window.location.href = url, 450);
+        };
+
+        function showModal(title, desc, type, onConfirm) {
+            const modal = document.getElementById('custom-modal');
+            const titleEl = document.getElementById('modal-title-text');
+            const descEl = document.getElementById('modal-desc-text');
+            const iconWrapper = document.getElementById('modal-icon-container');
+            const actionsContainer = document.getElementById('modal-actions-container');
+
+            titleEl.innerText = title;
+            descEl.innerText = desc;
+            modal.classList.add('active');
+
+            if (type === 'success') {
+                iconWrapper.className = 'modal-icon-wrapper success';
+                iconWrapper.innerHTML = '<i data-lucide="check" style="width: 24px; height: 24px;"></i>';
+                actionsContainer.innerHTML = `<button id="modal-ok-btn" class="btn-success" style="width: 100%;">ตกลง</button>`;
+                
+                document.getElementById('modal-ok-btn').addEventListener('click', () => {
+                    modal.classList.remove('active');
+                    if (onConfirm) onConfirm();
+                }, { once: true });
+            } else if (type === 'error' || type === 'warning') {
+                iconWrapper.className = 'modal-icon-wrapper'; 
+                iconWrapper.innerHTML = '<i data-lucide="alert-circle" style="width: 24px; height: 24px;"></i>';
+                actionsContainer.innerHTML = `<button id="modal-ok-btn" class="btn-danger" style="width: 100%;">ตกลง</button>`;
+                
+                document.getElementById('modal-ok-btn').addEventListener('click', () => {
+                    modal.classList.remove('active');
+                    if (onConfirm) onConfirm();
+                }, { once: true });
+            } else {
+                iconWrapper.className = 'modal-icon-wrapper';
+                iconWrapper.innerHTML = '<i data-lucide="trash-2" style="width: 24px; height: 24px;"></i>';
+                actionsContainer.innerHTML = `
+                    <button id="modal-cancel-btn" class="btn-secondary">ยกเลิก</button>
+                    <button id="modal-confirm-btn" class="btn-danger">ยืนยัน</button>
+                `;
+
+                document.getElementById('modal-cancel-btn').addEventListener('click', () => {
+                    modal.classList.remove('active');
+                }, { once: true });
+
+                document.getElementById('modal-confirm-btn').addEventListener('click', () => {
+                    modal.classList.remove('active');
+                    if (onConfirm) onConfirm();
+                }, { once: true });
+            }
+            lucide.createIcons();
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const updateHealthBtn = document.getElementById('update-health-btn');
             const updatePasswordBtn = document.getElementById('update-password-btn');
             const avatarFileInput = document.getElementById('avatar-file-input');
             const avatarPreviewBox = document.getElementById('avatar-preview-box');
+            const newPasswordInput = document.getElementById('new-password');
 
-            // ทำให้คลิกที่รูปวงกลมแล้วเปิดตัวเลือกไฟล์ได้ด้วย
+            if (newPasswordInput) {
+                newPasswordInput.addEventListener('input', (e) => {
+                    const val = e.target.value;
+                    if (val.length === 0) {
+                        e.target.style.borderColor = 'var(--border-color)';
+                        e.target.style.boxShadow = 'none';
+                    } else if (val.length < 6) {
+                        e.target.style.borderColor = '#dc3545'; 
+                        e.target.style.boxShadow = '0 0 0 3px rgba(220, 53, 69, 0.1)';
+                    } else {
+                        e.target.style.borderColor = '#28a745'; 
+                        e.target.style.boxShadow = '0 0 0 3px rgba(40, 167, 69, 0.1)';
+                    }
+                });
+            }
+
             avatarPreviewBox.addEventListener('click', () => {
                 avatarFileInput.click();
             });
@@ -304,7 +440,7 @@ button:active, .btn-auth:active, .custom-file-upload:active {
                                 const user = JSON.parse(savedData);
                                 user.avatar = base64Image;
                                 localStorage.setItem('user_session', JSON.stringify(user));
-                                alert('อัปเดตรูปโปรไฟล์เรียบร้อยแล้วครับ! ✨');
+                                showModal('อัปเดตสำเร็จ!', 'เปลี่ยนรูปโปรไฟล์เรียบร้อยแล้วครับ ✨', 'success');
                             }
                         };
                         reader.readAsDataURL(file);
@@ -333,26 +469,14 @@ button:active, .btn-auth:active, .custom-file-upload:active {
 
             updateThemeUI(currentTheme);
 
-            if (toggleButton) {
-                toggleButton.addEventListener('click', () => {
-                    const theme = document.documentElement.getAttribute('data-theme');
-                    updateThemeUI(theme === 'dark' ? 'light' : 'dark');
-                });
-            }
-
-            if (mobileToggleBtn) {
-                mobileToggleBtn.addEventListener('click', () => {
-                    const theme = document.documentElement.getAttribute('data-theme');
-                    updateThemeUI(theme === 'dark' ? 'light' : 'dark');
-                });
-            }
+            if (toggleButton) toggleButton.addEventListener('click', () => updateThemeUI(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+            if (mobileToggleBtn) mobileToggleBtn.addEventListener('click', () => updateThemeUI(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
 
             function renderProfile() {
                 const savedData = localStorage.getItem('user_session');
                 const authButtonsDiv = document.getElementById('auth-buttons');
                 const profileContainer = document.getElementById('profile-container');
                 
-                // 🌟 ระบบคำนวณ Streak
                 const todayObj = new Date();
                 const todayStr = todayObj.toISOString().split('T')[0]; 
                 let lastActiveDate = localStorage.getItem('user_last_active_date');
@@ -367,23 +491,15 @@ button:active, .btn-auth:active, .custom-file-upload:active {
                     const currDateObj = new Date(todayStr);
                     const diffTime = currDateObj - lastDateObj;
                     const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-
-                    if (diffDays === 1) {
-                        streak += 1;
-                        localStorage.setItem('user_real_streak', streak);
-                        localStorage.setItem('user_last_active_date', todayStr);
-                    } else if (diffDays > 1) {
-                        streak = 1;
-                        localStorage.setItem('user_real_streak', streak);
-                        localStorage.setItem('user_last_active_date', todayStr);
-                    }
+                    if (diffDays === 1) { streak += 1; localStorage.setItem('user_real_streak', streak); localStorage.setItem('user_last_active_date', todayStr); } 
+                    else if (diffDays > 1) { streak = 1; localStorage.setItem('user_real_streak', streak); localStorage.setItem('user_last_active_date', todayStr); }
                 }
 
                 if (!savedData || !JSON.parse(savedData).isLoggedIn) {
                     if (authButtonsDiv) {
                         authButtonsDiv.innerHTML = `
-                            <button class="btn-auth btn-secondary" onclick="transitionToPage('login.html')">เข้าสู่ระบบ</button>
-                            <button class="btn-auth" onclick="transitionToPage('register.html')">สมัครบัญชี</button>
+                            <button class="btn-auth btn-secondary" onclick="window.transitionToPage('login.html')">เข้าสู่ระบบ</button>
+                            <button class="btn-auth" onclick="window.transitionToPage('register.html')">สมัครบัญชี</button>
                         `;
                     }
                     profileContainer.innerHTML = `
@@ -391,7 +507,7 @@ button:active, .btn-auth:active, .custom-file-upload:active {
                             <i data-lucide="lock" style="width: 36px; height: 36px; margin-bottom: 12px; color: var(--text-muted);"></i>
                             <h3 style="font-size: 16px; color: var(--text-main);">( โปรดเข้าสู่ระบบ )</h3>
                             <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">กรุณาเข้าสู่ระบบก่อนเข้าถึงข้อมูลส่วนตัวและตั้งค่าโปรไฟล์</p>
-                            <button onclick="transitionToPage('login.html')" style="max-width: 200px; margin: 20px auto 0 auto;">ไปหน้าเข้าสู่ระบบ</button>
+                            <button onclick="window.transitionToPage('login.html')" style="max-width: 200px; margin: 20px auto 0 auto;">ไปหน้าเข้าสู่ระบบ</button>
                         </div>
                     `;
                     lucide.createIcons();
@@ -400,9 +516,7 @@ button:active, .btn-auth:active, .custom-file-upload:active {
                 
                 const user = JSON.parse(savedData);
 
-                if (user.avatar) {
-                    avatarPreviewBox.innerHTML = `<img src="${user.avatar}" style="width:100%; height:100%; object-fit:cover;">`;
-                }
+                if (user.avatar) avatarPreviewBox.innerHTML = `<img src="${user.avatar}" style="width:100%; height:100%; object-fit:cover;">`;
 
                 if (authButtonsDiv) {
                     const avatarDisplay = user.avatar ? `<img src="${user.avatar}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;">` : `<i data-lucide="circle-user" style="width: 16px; height: 16px;"></i>`;
@@ -411,7 +525,7 @@ button:active, .btn-auth:active, .custom-file-upload:active {
                             <div style="display: flex; align-items: center; gap: 4px; background: var(--bg-main); padding: 6px 10px; border-radius: 12px; border: 1px solid var(--border-color); font-size: 13px; font-weight: 700; color: #ff6b6b;">
                                 <i data-lucide="flame" style="width: 15px; height: 15px;"></i> ${streak}
                             </div>
-                            <a onclick="transitionToPage('profile.html')" translate="no" style="font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; background: var(--bg-main); padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); color: var(--text-main); text-decoration: none; cursor: pointer;">
+                            <a onclick="window.transitionToPage('profile.html')" translate="no" style="font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; background: var(--bg-main); padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); color: var(--text-main); text-decoration: none; cursor: pointer;">
                                  ${avatarDisplay} ${user.username}
                             </a>
                         </div>
@@ -451,72 +565,97 @@ button:active, .btn-auth:active, .custom-file-upload:active {
                 updateHealthBtn.addEventListener('click', () => {
                     const weight = parseFloat(document.getElementById('main-weight').value);
                     const height = parseFloat(document.getElementById('main-height').value);
-                    const gender = document.getElementById('main-gender').value;
-                    const activity = document.getElementById('main-activity').value;
-                    const goalSelect = document.getElementById('main-goal');
-
-                    if (!weight || !height) { alert('กรุณากรอกน้ำหนักและส่วนสูงให้ครบถ้วนครับ 📝'); return; }
-                    if (weight <= 0 || height <= 0) {
-                        alert('อ๊ะ! น้ำหนักและส่วนสูงต้องเป็นตัวเลขที่มากกว่า 0 นะครับ 😅');
-                        document.getElementById('main-weight').value = ''; document.getElementById('main-height').value = ''; return;
+                    if (!weight || !height) { 
+                        showModal('ข้อมูลไม่ครบ!', 'กรุณากรอกน้ำหนักและส่วนสูงให้ครบถ้วนครับ 📝', 'warning'); 
+                        return; 
                     }
-                    if (weight > 300 || height > 300) { alert('ตัวเลขดูสูงผิดปกตินะครับ รบกวนตรวจสอบอีกครั้งครับ 🧐'); return; }
-
+                    
                     const savedData = localStorage.getItem('user_session');
                     if (savedData) {
                         const user = JSON.parse(savedData);
                         user.weight = weight; 
                         user.height = height; 
-                        user.gender = gender; 
-                        user.activity = activity;
-                        if (goalSelect) { user.goal = goalSelect.options[goalSelect.selectedIndex].text; }
+                        user.gender = document.getElementById('main-gender').value; 
+                        user.activity = document.getElementById('main-activity').value;
+                        const goalSelect = document.getElementById('main-goal');
+                        if (goalSelect) user.goal = goalSelect.options[goalSelect.selectedIndex].text;
                         
                         localStorage.setItem('user_session', JSON.stringify(user));
-                        alert('อัปเดตสัดส่วนและเป้าหมายสุขภาพเรียบร้อยแล้วครับ! 🎉');
-                        transitionToPage('home.html');
+                        
+                        showModal('บันทึกสำเร็จ!', 'อัปเดตสัดส่วนและเป้าหมายสุขภาพเรียบร้อยแล้วครับ! 🎉', 'success', () => {
+                            window.transitionToPage('home.html');
+                        });
                     }
                 });
             }
 
             if (updatePasswordBtn) {
-                updatePasswordBtn.addEventListener('click', () => {
+                updatePasswordBtn.addEventListener('click', async () => {
                     const oldPass = document.getElementById('old-password').value;
                     const newPass = document.getElementById('new-password').value;
+                    const btn = updatePasswordBtn;
 
                     if (!oldPass || !newPass) {
-                        alert('กรุณากรอกรหัสผ่านเดิมและรหัสผ่านใหม่ให้ครบถ้วนครับ 🔑');
+                        showModal('ข้อมูลไม่ครบ!', 'กรุณากรอกรหัสผ่านเดิมและรหัสผ่านใหม่ให้ครบถ้วน 🔑', 'warning');
                         return;
                     }
 
-                    const savedData = localStorage.getItem('user_session');
-                    if (savedData) {
-                        const user = JSON.parse(savedData);
-                        
-                        if (user.password && user.password !== oldPass) {
-                            alert('รหัสผ่านเดิมไม่ถูกต้องครับ กรุณาลองใหม่อีกครั้ง ❌');
+                    if (newPass.length < 6) {
+                        showModal('รหัสผ่านสั้นเกินไป!', 'รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 6 ตัวอักษร 🔒', 'error');
+                        return;
+                    }
+
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i data-lucide="loader" class="spin-icon" style="width: 16px; height: 16px;"></i> กำลังตรวจสอบ...';
+                    btn.disabled = true;
+                    lucide.createIcons();
+
+                    try {
+                        const user = auth.currentUser;
+                        if (!user) {
+                            showModal('เซสชันหมดอายุ', 'ไม่พบการเชื่อมต่อ กรุณาล็อกอินใหม่อีกครั้งครับ ⚠️', 'error');
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
                             return;
                         }
 
-                        user.password = newPass;
-                        localStorage.setItem('user_session', JSON.stringify(user));
+                        const credential = EmailAuthProvider.credential(user.email, oldPass);
+                        await reauthenticateWithCredential(user, credential);
+
+                        await updatePassword(user, newPass);
+
+                        const savedData = localStorage.getItem('user_session');
+                        if (savedData) {
+                            const localUser = JSON.parse(savedData);
+                            localUser.password = newPass;
+                            localStorage.setItem('user_session', JSON.stringify(localUser));
+                        }
+
+                        showModal('สำเร็จ!', 'เปลี่ยนรหัสผ่านในระบบเรียบร้อยแล้วครับ 🎉', 'success');
                         
-                        alert('เปลี่ยนรหัสผ่านเรียบร้อยแล้วครับ! 🎉');
                         document.getElementById('old-password').value = '';
                         document.getElementById('new-password').value = '';
+                        newPasswordInput.style.borderColor = 'var(--border-color)';
+                        newPasswordInput.style.boxShadow = 'none';
+
+                    } catch (error) {
+                        console.error("Firebase Auth Error:", error);
+                        if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+                            showModal('รหัสผ่านผิด!', 'รหัสผ่านเดิมไม่ถูกต้องครับ กรุณาลองใหม่อีกครั้ง ❌', 'error');
+                        } else if (error.code === 'auth/too-many-requests') {
+                            showModal('ใจเย็นๆ นะ!', 'คุณพยายามเปลี่ยนรหัสผ่านบ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่ครับ ⏳', 'warning');
+                        } else {
+                            showModal('เกิดข้อผิดพลาด!', error.message, 'error');
+                        }
+                    } finally {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
                     }
                 });
             }
 
             lucide.createIcons();
         });
-
-        // 🌟 ฟังก์ชันคุมจังหวะการ Fade ให้นุ่มนวลกำลังดี
-        function transitionToPage(url) {
-            document.body.classList.add('fade-out');
-            setTimeout(() => {
-                window.location.href = url;
-            }, 450);
-        }
 
         document.addEventListener('DOMContentLoaded', () => {
             const internalLinks = document.querySelectorAll('a[href]');
@@ -525,7 +664,7 @@ button:active, .btn-auth:active, .custom-file-upload:active {
                     const href = this.getAttribute('href');
                     if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
                         e.preventDefault();
-                        transitionToPage(href);
+                        window.transitionToPage(href);
                     }
                 });
             });

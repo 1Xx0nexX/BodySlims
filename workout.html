@@ -165,7 +165,6 @@ button:active, .btn-auth:active, .custom-file-upload:active {
         <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
         
         <div class="nav-links">
-            <a href="index.html">BodySlim ?</a>
             <a href="home.html">หน้าหลัก</a>
             <a href="workout.html" class="active">ตารางออกกำลังกาย</a>
             <a href="profile.html">โปรไฟล์</a>
@@ -181,7 +180,6 @@ button:active, .btn-auth:active, .custom-file-upload:active {
         </div>
 
         <div id="mobile-dropdown" class="mobile-dropdown">
-            <a href="index.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> BodySlim ?</a>
             <a href="home.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> หน้าหลัก</a>
             <a href="workout.html"><i data-lucide="activity" style="width: 16px; height: 16px;"></i> ตารางออกกำลังกาย</a>
             <a href="profile.html"><i data-lucide="user" style="width: 16px; height: 16px;"></i> โปรไฟล์</a>
@@ -258,7 +256,7 @@ button:active, .btn-auth:active, .custom-file-upload:active {
                 <div id="ai-workout-skeleton" style="display: none; font-size: 13px; color: var(--text-muted); text-align: center; padding: 20px 0; border-radius: 0;">
                     <div class="skeleton-line" style="width: 90%; height: 16px; margin: 0 auto 10px auto;"></div>
                     <div class="skeleton-line" style="width: 60%; height: 14px; margin: 0 auto;"></div>
-                    <p style="margin-top: 10px;">กำลังให้เทรนเนอร์ AI วิเคราะห์ตารางฝึก...</p>
+                    <p style="margin-top: 10px;">กำลังให้ Body AI วิเคราะห์ตารางฝึก...</p>
                 </div>
                 <div id="ai-workout-result" style="display: none; background-color: var(--bg-main); padding: 16px; border: 1px dashed var(--border-color); border-radius: 12px !important; margin-bottom: 12px;">
                 </div>
@@ -522,7 +520,7 @@ button:active, .btn-auth:active, .custom-file-upload:active {
                     const k1 = "AQ.Ab8RN6L6tOb0u4RLfOsakgQBelt";
                     const k2 = "qojJ9Ys4mlcNs3-LQ_I3pxQ";
                     const API_KEY = k1 + k2;
-                    const prompt = `คุณคือเทรนเนอร์ฟิตเนสผู้เชี่ยวชาญ ผู้ใช้งานมีเป้าหมาย: "${user.goal || 'รักษาสุขภาพ'}", อายุ: "${calculatedAge} ปี", น้ำหนัก: "${user.weight || 70} กก.", ส่วนสูง: "${user.height || 170} ซม."
+                    const prompt = `คุณคือเทรนเนอร์ฟิตเนสผู้เชี่ยวชาญ ผู้ใช้งานมีเป้าหมาย: "${user.goal || 'ลดน้ำหนัก & ไขมัน'}", อายุ: "${calculatedAge} ปี", น้ำหนัก: "${user.weight || 70} กก.", ส่วนสูง: "${user.height || 170} ซม."
                     ต้องการตารางออกกำลังกายในช่วงเวลา: "${timeSelected}", ระดับความพร้อม: "${levelSelected}"
                     หมายเหตุ / ความต้องการเพิ่มเติมจากผู้ใช้: "${customPromptText ? customPromptText : 'ไม่มีข้อจำกัดพิเศษ'}"
                     
@@ -543,7 +541,7 @@ button:active, .btn-auth:active, .custom-file-upload:active {
                             <li>• [ชื่อท่าออกกำลังกาย พร้อมจำนวนเซตและครั้ง]</li>
                         </ul>
                         <div style="font-size: 11px; color: #dc3545; background: var(--bg-main); padding: 8px; border-radius: 8px; border: 1px dashed var(--border-color);">
-                            ⚠️ <strong>คำแนะนำจากเทรนเนอร์:</strong> ถ้าไหวเท่าไหนก็เท่านั้น เน้นสุด เน้นฟอร์ม! ถ้าไม่ไหวหรือเริ่มมีอาการเจ็บ ให้หยุดพักทันทีห้ามฝืน
+                            ⚠️ <strong>คำแนะนำจาก Body AI:</strong> ถ้าไหวเท่าไหนก็เท่านั้น เน้นสุด เน้นฟอร์ม! ถ้าไม่ไหวหรือเริ่มมีอาการเจ็บ ให้หยุดพักทันทีห้ามฝืน
                         </div>
                     </div>`;
 

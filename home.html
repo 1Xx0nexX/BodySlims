@@ -217,7 +217,6 @@ body.fade-out {
         <a href="index.html" class="logo" style="text-decoration: none;">BodySlim</a>
         
         <div class="nav-links">
-            <a href="index.html">BodySlim ?</a>
             <a href="home.html" class="active">หน้าหลัก</a>
             <a href="workout.html">ตารางออกกำลังกาย</a>
             <a href="profile.html">โปรไฟล์</a>
@@ -233,7 +232,6 @@ body.fade-out {
         </div>
 
         <div id="mobile-dropdown" class="mobile-dropdown">
-            <a href="index.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> BodySlim ?</a>
             <a href="home.html"><i data-lucide="home" style="width: 16px; height: 16px;"></i> หน้าหลัก</a>
             <a href="workout.html"><i data-lucide="activity" style="width: 16px; height: 16px;"></i> ตารางออกกำลังกาย</a>
             <a href="profile.html"><i data-lucide="user" style="width: 16px; height: 16px;"></i> โปรไฟล์</a>
@@ -274,6 +272,7 @@ body.fade-out {
                     <div><strong>เป้าหมาย:</strong> <span id="user-goal" style="color: var(--text-muted);">N/A</span></div>
                     <div><strong>อายุ:</strong> <span id="user-age" style="color: var(--text-muted);">N/A</span></div>
                     <div><strong>น้ำหนัก / ส่วนสูง:</strong> <span id="user-weight-height" style="color: var(--text-muted);">N/A</span></div>
+                    <div><strong>ค่า BMI:</strong> <span id="user-bmi" style="color: var(--text-muted);">N/A</span></div>
                     <div><strong>ค่า TDEE:</strong> <span id="user-tdee" style="color: var(--text-muted);">N/A</span></div>
                     <div><strong>เป้าหมายแคลอรี:</strong> <span id="user-target-cal" style="color: var(--text-muted);">N/A</span></div>
                     <div><strong>เป้าหมายโปรตีน:</strong> <span id="user-target-protein" style="color: var(--text-muted);">N/A</span></div>
@@ -456,7 +455,6 @@ body.fade-out {
                 });
             }
 
-            // 🌟 ฟังก์ชันเปิด Custom Modal แทนที่ confirm() แบบเดิม
             function showConfirmModal(title, desc, onConfirm) {
                 const modal = document.getElementById('custom-modal');
                 const titleEl = document.getElementById('modal-title-text');
@@ -469,7 +467,6 @@ body.fade-out {
 
                 modal.classList.add('active');
 
-                // ล้าง Event เก่าป้องกันกดเบิ้ล
                 const newConfirmBtn = confirmBtn.cloneNode(true);
                 const newCancelBtn = cancelBtn.cloneNode(true);
                 confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
@@ -484,7 +481,6 @@ body.fade-out {
                     modal.classList.remove('active');
                 });
 
-                // กดพื้นหลังเพื่อปิด
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         modal.classList.remove('active');
@@ -526,6 +522,7 @@ body.fade-out {
                     document.getElementById('user-goal').innerText = "N/A";
                     document.getElementById('user-age').innerText = "N/A";
                     document.getElementById('user-weight-height').innerText = "N/A";
+                    document.getElementById('user-bmi').innerText = "N/A";
                     document.getElementById('user-tdee').innerText = "N/A";
                     document.getElementById('user-target-cal').innerText = "N/A";
                     document.getElementById('user-target-protein').innerText = "N/A";
@@ -616,11 +613,31 @@ body.fade-out {
                     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateObj.getDate())) { calculatedAge--; }
                 }
                 document.getElementById('user-age').innerText = calculatedAge + " ปี";
+                
                 if (user.weight && user.height) {
                     document.getElementById('user-weight-height').innerText = `${user.weight} กก. / ${user.height} ซม.`;
-                }
 
-                if (user.weight && user.height) {
+                    const heightInMeters = user.height / 100;
+                    const bmi = (user.weight / (heightInMeters * heightInMeters)).toFixed(1);
+                    
+                    let bmiStatus = "";
+                    let bmiColor = "var(--text-muted)";
+                    if (bmi < 18.5) {
+                        bmiStatus = "ผอมเกินไป";
+                        bmiColor = "#3b82f6";
+                    } else if (bmi >= 18.5 && bmi < 23) {
+                        bmiStatus = "สมส่วน (ปกติ)";
+                        bmiColor = "#10b981";
+                    } else if (bmi >= 23 && bmi < 25) {
+                        bmiStatus = "ท้วม / น้ำหนักเกิน";
+                        bmiColor = "#f59e0b";
+                    } else {
+                        bmiStatus = "อ้วน";
+                        bmiColor = "#dc3545";
+                    }
+                    
+                    document.getElementById('user-bmi').innerHTML = `<strong style="color: ${bmiColor};">${bmi}</strong> (${bmiStatus})`;
+
                     let genderBonus = user.gender === 'female' ? -161 : 5;
                     const bmr = (10 * user.weight) + (6.25 * user.height) - (5 * calculatedAge) + genderBonus;
                     const activityMultiplier = parseFloat(user.activity || 1.375);
@@ -632,7 +649,8 @@ body.fade-out {
                     let protMin = Math.round(user.weight * 1.4);
                     let protMax = Math.round(user.weight * 1.8);
 
-                    if (user.goal && user.goal.includes("ควบคุมน้ำหนัก")) { 
+                    // 🌟 รองรับเป้าหมาย "ลดน้ำหนัก & ไขมัน"
+                    if (user.goal && (user.goal.includes("ควบคุมน้ำหนัก") || user.goal.includes("ลดน้ำหนัก"))) { 
                         calMin = tdee - 500; 
                         calMax = tdee - 300;
                         protMin = Math.round(user.weight * 1.8);
@@ -702,7 +720,6 @@ body.fade-out {
             
             renderUserData(); 
 
-            // 🌟 แทนที่ confirm() ด้วย Custom Modal แบบสมูท
             if (resetMealsBtn) {
                 resetMealsBtn.addEventListener('click', () => {
                     const savedData = localStorage.getItem('user_session');
@@ -891,7 +908,6 @@ body.fade-out {
             lucide.createIcons();
         });
 
-        // 🌟 เอฟเฟกต์ Fade ตอนกดเปลี่ยนหน้า
         document.addEventListener('DOMContentLoaded', () => {
             const internalLinks = document.querySelectorAll('a[href]');
             
@@ -899,14 +915,13 @@ body.fade-out {
                 link.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
                     
-                    // ตรวจสอบว่าเป็นลิงก์ภายในเว็บเดียวกันหรือไม่ และไม่ใช่ลิงก์ # หรือเปิด tab ใหม่
                     if (href && !href.startsWith('#') && !href.startsWith('http') && this.getAttribute('target') !== '_blank') {
-                        e.preventDefault(); // หยุดการเปลี่ยนหน้าชั่วคราวเพื่อให้แอนิเมชันเล่นก่อน
+                        e.preventDefault(); 
                         document.body.classList.add('fade-out');
                         
                         setTimeout(() => {
                             window.location.href = href;
-                        }, 300); // รอให้แอนิเมชันเล่น 0.3 วินาทีแล้วค่อยเปลี่ยนหน้า
+                        }, 300); 
                     }
                 });
             });
